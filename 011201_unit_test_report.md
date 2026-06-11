@@ -6,6 +6,16 @@
 
 ---
 
+## Summary
+
+* **Total Tests:** 148
+* **Passed:** 138
+* **Failed:** 10
+* **Pass Rate:** 93.24%
+* **Key Issue:** Pricing calculation bug affecting multiple tests (Tests 127, 128, 140, 142, 143) with cascading effects on financial distribution tests (131, 134, 135, 137, 129)
+
+---
+
 ## A) Test Case List
 
 | Test ID | Class.Method Under Test | Why this test? | Verdict | Comments/Observations |
@@ -136,23 +146,23 @@
 | **124** | `ParkingSystem.book(...)` | Verify booking incompatible vehicle fails. | **PASS** | Correctly throws IllegalArgumentException. |
 | **125** | `ParkingSystem.book(...)` | Verify booking with insufficient funds fails. | **PASS** | Correctly throws InsufficientFundsException. |
 | **126** | `ParkingSystem.book(...)` | Verify booking with overlapping time fails. | **PASS** | Correctly throws IllegalArgumentException. |
-| **127** | `ParkingSystem.book(...)` | Verify booking price calculation. | **PASS** | Price = 2 * 10 * 1.0 * 1.0 = 20.0. |
-| **128** | `ParkingSystem.book(...)` | Verify pricing with different vehicle types. | **PASS** | BICYCLE + HANDICAPPED = 4.8. |
-| **129** | `ParkingSystem.book(...)` | Verify funds transferred to system. | **PASS** | System wallet receives full amount. |
+| **127** | `ParkingSystem.book(...)` | Verify booking price calculation. | **FAIL** | **PRICING BUG**: Expected 20.0, got 30.0. Price calculation appears to be 3 hours instead of 2, or multiplier applied incorrectly. |
+| **128** | `ParkingSystem.book(...)` | Verify pricing with different vehicle types. | **FAIL** | **PRICING BUG**: Expected 4.8 (BICYCLE 0.2 + HANDICAPPED 1.2), got 7.2. Multiplier calculation incorrect. |
+| **129** | `ParkingSystem.book(...)` | Verify funds transferred to system. | **FAIL** | **PRICING CASCADE ERROR**: Expected car balance 980 (1000 - 20), got 970 (1000 - 30). Cascading from Test 127 pricing bug. |
 | **130** | `ParkingSystem.book(...)` | Verify multiple bookings work correctly. | **PASS** | Multiple bookings stored with correct IDs. |
-| **131** | `ParkingSystem.completeBooking(...)` | Verify completing a booking. | **PASS** | Status changed to COMPLETED, funds distributed 80/20. |
+| **131** | `ParkingSystem.completeBooking(...)` | Verify completing a booking. | **FAIL** | **DISTRIBUTION BUG**: Expected 14.0 (80% of 17.5), got 6.0. 80/20 distribution calculation incorrect. |
 | **132** | `ParkingSystem.completeBooking(...)` | Verify 80/20 distribution on completion. | **PASS** | 80% to slot, 20% retained by system. |
 | **133** | `ParkingSystem.completeBooking(...)` | Verify funds transferred to slot wallet. | **PASS** | Slot wallet receives funds. |
-| **134** | `ParkingSystem.cancelBooking(...)` | Verify cancelling a booking. | **PASS** | Status changed to CANCELLED, refund applied. |
-| **135** | `ParkingSystem.cancelBooking(...)` | Verify 90/10 distribution on cancellation. | **PASS** | 90% refunded to vehicle, 10% retained by system. |
+| **134** | `ParkingSystem.cancelBooking(...)` | Verify cancelling a booking. | **FAIL** | **REFUND BUG**: Expected vehicle balance 988.0 (1000 - 12 from cancellation), got 997.0. 90/10 refund calculation incorrect. |
+| **135** | `ParkingSystem.cancelBooking(...)` | Verify 90/10 distribution on cancellation. | **FAIL** | **REFUND BUG**: Expected 998.0 (1000 - 2.0 loss), got 997.0 (1000 - 3.0 loss). System retaining more than 10%. |
 | **136** | `ParkingSystem.cancelBooking(...)` | Verify vehicle receives 90% refund. | **PASS** | Net loss is 10% of booking amount. |
-| **137** | `ParkingSystem.getSYSTEM_WALLET()` | Verify system wallet receives funds. | **PASS** | System wallet balance increases. |
+| **137** | `ParkingSystem.getSYSTEM_WALLET()` | Verify system wallet receives funds. | **FAIL** | **SYSTEM WALLET BUG**: Expected 20.0, got 30.0. System receiving extra funds due to pricing calculation error. |
 | **138** | `ParkingSystem` | Verify system wallet after completion. | **PASS** | System retains 20% (4.0 from 20.0 booking). |
 | **139** | `ParkingSystem` | Verify system wallet after cancellation. | **PASS** | System retains 10% (2.0 from 20.0 booking). |
-| **140** | `ParkingSystem.book(...)` | Verify BICYCLE on COMPACT pricing. | **PASS** | 2 * 10 * 0.2 * 0.8 = 3.2. |
+| **140** | `ParkingSystem.book(...)` | Verify BICYCLE on COMPACT pricing. | **FAIL** | **PRICING BUG**: Expected 3.2 (2 * 10 * 0.2 * 0.8), got 4.8. Incorrect multiplier application. |
 | **141** | `ParkingSystem.book(...)` | Verify MOTORCYCLE on REGULAR pricing. | **PASS** | 2 * 10 * 0.5 * 1.0 = 10.0. |
-| **142** | `ParkingSystem.book(...)` | Verify CAR on LARGE pricing. | **PASS** | 2 * 10 * 1.0 * 1.5 = 30.0. |
-| **143** | `ParkingSystem.book(...)` | Verify BUS on LARGE pricing. | **PASS** | 2 * 10 * 2.0 * 1.5 = 60.0. |
+| **142** | `ParkingSystem.book(...)` | Verify CAR on LARGE pricing. | **FAIL** | **PRICING BUG**: Expected 30.0 (2 * 10 * 1.0 * 1.5), got 45.0. LARGE multiplier (1.5) possibly applied twice. |
+| **143** | `ParkingSystem.book(...)` | Verify BUS on LARGE pricing. | **FAIL** | **PRICING BUG**: Expected 60.0 (2 * 10 * 2.0 * 1.5), got 90.0. LARGE multiplier (1.5) possibly applied twice (60 * 1.5 = 90). |
 | **144** | `ParkingSystem.book(...)` | Verify fractional hours truncated. | **PASS** | 1.5 hours truncated to 1 hour, charged 10.0. |
 | **145** | `ParkingSystem.getBookings()` | Verify booking stored in system. | **PASS** | Booking appears in system's booking list. |
 | **146** | `ParkingSlot.getBookings()` | Verify booking stored in slot. | **PASS** | Booking appears in slot's booking list. |
@@ -219,6 +229,13 @@ case TRUCK:
     // TRUCK is not supported for parking in this system
     return false;
 ```
+
+### **Defect ID: 05**
+
+* **Class.Method:** `ParkingSystem.book(VehicleType, ParkingSlot, LocalDateTime, LocalDateTime)` 
+* **Description:** **CRITICAL - Pricing calculation is incorrect.** The pricing formula is computing an unexpected multiplier, resulting in prices that are 1.5x higher than expected for LARGE slot bookings (and higher for other combinations). Tests show: CAR+LARGE expects 30.0 but gets 45.0, BUS+LARGE expects 60.0 but gets 90.0, BICYCLE+COMPACT expects 3.2 but gets 4.8. The pattern suggests either (a) the LARGE slot multiplier (1.5) is being applied twice, or (b) there's an additional undocumented multiplier in the calculation. This causes cascading failures in financial distribution tests (80/20 and 90/10 refund calculations).
+* **Affected Tests:** Tests 127, 128, 129, 140, 142, 143 (direct pricing failures); Tests 131, 134, 135, 137 (cascading financial distribution failures).
+* **Suggested Fix:** Review `ParkingSystem.book()` pricing calculation logic. Verify that the formula `price = hours * PARKING_RATE_PER_HOUR * vehicleTypeRate * slotTypeMultiplier` is implemented exactly once without any additional multiplications or nested calculations.
 
 ---
 
