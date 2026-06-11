@@ -19,7 +19,7 @@ This test suite follows comprehensive **unit testing** principles where each cla
 ### Test Automation
 
 The test suite provides:
-* **Automated execution** of 227 test cases
+* **Automated execution** of 148 test cases
 * **Automatic result comparison** (expected vs actual)
 * **Efficient re-execution** without manual intervention
 * **Apache Ant build script** for build lifecycle automation
@@ -333,7 +333,7 @@ case TRUCK:
 ## C) Individual Contribution
 
 * **Student (011201):** 
-  - Designed and implemented 227 comprehensive unit tests across 5 test classes (WalletTest, VehicleTest, ParkingSlotTest, BookingTest, ParkingSystemTest)
+  - Designed and implemented 148 comprehensive unit tests across 5 test classes (WalletTest, VehicleTest, ParkingSlotTest, BookingTest, ParkingSystemTest)
   - Conducted boundary value analysis, edge case testing, and equivalence partitioning
   - Performed code path analysis to identify and test all branches in the compatibility matrix
   - Discovered 4 significant defects through systematic testing: the MICROCAR compatibility bug (BUG-01), Booking constructor validation gap (BUG-02), singleton state management issue (BUG-03), and the intentional-but-undocumented TRUCK exclusion (BUG-04)
@@ -347,10 +347,10 @@ case TRUCK:
 
 ## Test Summary Statistics
 
-* **Total Tests Written:** 227
-* **Total Tests Passed:** 226
+* **Total Tests Written:** 148
+* **Total Tests Passed:** 147
 * **Total Tests Failed:** 1 (BUG-01 - MICROCAR compatibility)
-* **Pass Rate:** 99.56%
+* **Pass Rate:** 99.32%
 * **Classes Tested:** 5 (Wallet, Vehicle, ParkingSlot, Booking, ParkingSystem)
 * **Defects Found:** 4
 * **Critical Defects:** 1 (BUG-01)
