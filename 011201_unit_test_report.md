@@ -6,6 +6,94 @@
 
 ---
 
+## Testing Methodology & Framework
+
+### Unit Testing Approach
+
+This test suite follows comprehensive **unit testing** principles where each class is tested in isolation:
+
+* **Unit**: Individual methods and classes (Wallet, Vehicle, ParkingSlot, Booking, ParkingSystem)
+* **Isolation**: Each unit tested independently with mocks/stubs for dependencies
+* **Assertions**: JUnit assertions verify outputs and object state changes
+
+### Test Automation
+
+The test suite provides:
+* **Automated execution** of 227 test cases
+* **Automatic result comparison** (expected vs actual)
+* **Efficient re-execution** without manual intervention
+* **Apache Ant build script** for build lifecycle automation
+
+### Test Scaffolding
+
+Test infrastructure includes:
+
+| Component | Purpose | Example |
+|-----------|---------|---------|
+| **Fixtures** | Reusable test data initialized in @BeforeEach | Wallet objects, Vehicle instances |
+| **Test Harness** | System of interconnected objects | ParkingSystem with multiple vehicles and slots |
+| **Stubs** | Simplified dependencies | LocalDateTime objects simulating time |
+| **Mocks** | Replace unavailable components | Wallet acts as mock for financial system |
+
+### JUnit Framework & Annotations
+
+**Key Annotations Used:**
+- `@BeforeEach`: Initialize fixtures before each test (ensures test independence)
+- `@AfterEach`: Clean up resources after each test (teardown phase)
+- `@Test`: Mark methods as test cases
+- `@DisplayName`: Descriptive test names
+
+**Test Structure (AAA Pattern):**
+1. **Arrange**: Set up test data and preconditions
+2. **Act**: Execute the unit being tested
+3. **Assert**: Verify results using JUnit assertions
+
+### Assertions Used
+
+| Assertion | Purpose | Usage |
+|-----------|---------|-------|
+| `assertEquals(expected, actual)` | Verify exact value match | Balance calculations, IDs |
+| `assertTrue(condition)` | Verify boolean condition | State checks (isActive, etc.) |
+| `assertFalse(condition)` | Verify condition is false | Incompatibility checks |
+| `assertThrows(ExceptionClass, executable)` | Verify exception thrown | Invalid amount checks |
+| `assertNotNull(object)` | Verify object exists | Wallet/Slot not null |
+| `assertNotSame(obj1, obj2)` | Verify different objects | Multiple vehicle independence |
+| `assertEquals(expected, actual, delta)` | Verify float equality with tolerance | Precise financial calculations |
+
+### Best Practices Implemented
+
+✓ **One scenario per test**: Each test verifies single behavior  
+✓ **Test independence**: @AfterEach ensures no state carryover  
+✓ **Assertions over print statements**: All verification via assertions  
+✓ **Exception testing**: Comprehensive error condition coverage  
+✓ **Deterministic results**: Repeatable, no random dependencies  
+✓ **Boundary testing**: Zero, negative, large values tested  
+✓ **Clear naming**: Test names describe what is being tested  
+
+### Build Lifecycle & Apache Ant
+
+The `build.xml` script automates the complete build lifecycle:
+
+```
+Validate → Compile → Test → Package → Deploy
+```
+
+**Ant Targets:**
+- `validate`: Check project structure
+- `compile`: Compile source code to classes.dir
+- `compile-tests`: Compile test code
+- `test`: Run all JUnit tests (DEFAULT)
+- `package`: Create distribution JAR
+- `clean`: Remove build artifacts
+- `rebuild`: Clean + compile
+- `test-single`: Run specific test class
+
+**Path Management:**
+- `compile.classpath`: Dependencies for compilation
+- `test.classpath`: Runtime dependencies for tests
+
+---
+
 ## A) Test Case List
 
 | Test ID | Class.Method Under Test | Why this test? | Verdict | Comments/Observations |
@@ -287,5 +375,22 @@ ParkingSystemTest includes integration tests that verify end-to-end workflows li
 
 ### Precision Testing
 Wallet and pricing tests verify decimal precision to ensure financial calculations are accurate.
+
+---
+
+## Testing Approach Documentation
+
+For detailed information about unit testing methodology, test automation, and build system configuration, please refer to [BUILD_AND_TEST_GUIDE.md](BUILD_AND_TEST_GUIDE.md).
+
+This guide covers:
+- Unit testing principles and isolation techniques
+- JUnit 5 framework and annotations
+- AAA pattern implementation (Arrange-Act-Assert)
+- Test scaffolding (fixtures, harnesses, stubs, mocks)
+- Test independence and best practices
+- Apache Ant build automation
+- Build lifecycle and targets
+- Mocking strategies
+- Test execution and maintenance
 
 ---

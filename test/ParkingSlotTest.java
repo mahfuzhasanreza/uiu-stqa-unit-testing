@@ -1,8 +1,30 @@
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit Tests for ParkingSlot class
+ * 
+ * Test Scaffolding:
+ * - @BeforeEach (setUp): Initializes test fixtures before each test
+ * - @AfterEach (tearDown): Cleans up resources after each test
+ * 
+ * Each test follows the AAA pattern:
+ * - Arrange: Set up test data and preconditions
+ * - Act: Execute the method being tested
+ * - Assert: Verify the results and object state
+ * 
+ * Mock objects and stubs: LocalDateTime objects simulate time windows
+ * 
+ * Testing focus:
+ * - Compatibility matrix validation (all vehicle/slot type combinations)
+ * - State transitions (activate/deactivate)
+ * - Availability logic with time window overlaps
+ * - Boundary conditions and edge cases
+ */
 public class ParkingSlotTest {
     private ParkingSlot slot;
     private LocalDateTime startTime;
@@ -15,12 +37,23 @@ public class ParkingSlotTest {
         endTime = LocalDateTime.of(2024, 6, 1, 12, 0);
     }
 
-    // ==================== ParkingSlot Constructor Tests ====================
+    @AfterEach
+    public void tearDown() {
+        slot = null;
+        startTime = null;
+        endTime = null;
+    }
+
+    // ==================== CONSTRUCTOR & INITIALIZATION TESTS ====================
+    // Testing: ParkingSlot creation and initial state
+
     @Test
     public void testParkingSlotConstructor() {
-        // TC-01: Verify ParkingSlot constructor initializes correctly
+        // ARRANGE: Constructor parameters ready
+        // ACT: Create parking slot
         ParkingSlot newSlot = new ParkingSlot("S100", ParkingSlotType.COMPACT);
         
+        // ASSERT: Verify all fields initialized correctly
         assertEquals("S100", newSlot.getSlotId(), "Slot ID should match");
         assertEquals(ParkingSlotType.COMPACT, newSlot.getSlotType(), "Slot type should match");
         assertTrue(newSlot.isActive(), "Slot should be active by default");

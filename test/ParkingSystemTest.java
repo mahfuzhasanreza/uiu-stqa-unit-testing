@@ -1,10 +1,37 @@
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import java.time.LocalDateTime;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit Tests for ParkingSystem class
+ * 
+ * Test Scaffolding:
+ * - @BeforeEach (setUp): Initializes test fixtures - test harness with vehicles, slots
+ * - @AfterEach (tearDown): Cleans up static singleton state after each test
+ * 
+ * Singleton Management: ParkingSystem uses static instance that persists
+ * Therefore, tearDown() explicitly resets all collections to ensure test independence
+ * 
+ * Each test follows the AAA pattern:
+ * - Arrange: Set up test data, vehicles, parking slots
+ * - Act: Execute the method being tested
+ * - Assert: Verify the results, state changes, and financial transactions
+ * 
+ * Mock objects: LocalDateTime stubs simulate time windows
+ * Test harness: Multiple vehicles and slots represent the parking system environment
+ * 
+ * Testing focus:
+ * - Booking workflow (create -> complete/cancel)
+ * - Pricing formula with all vehicle/slot type combinations
+ * - Financial transactions (wallet transfers, fund distribution)
+ * - Error handling and validation (boundary conditions)
+ * - Availability logic and conflict detection
+ * - System state management and data storage
+ */
 public class ParkingSystemTest {
     private ParkingSystem parkingSystem;
     private Vehicle car;
@@ -18,21 +45,26 @@ public class ParkingSystemTest {
 
     @BeforeEach
     public void setUp() {
-        // Reset static instance for test isolation
+        // ARRANGE: Initialize parking system test harness
         parkingSystem = ParkingSystem.getInstance();
+        
+        // Reset static state for test isolation
         parkingSystem.setVehicles(new java.util.ArrayList<>());
         parkingSystem.setBookings(new java.util.ArrayList<>());
         parkingSystem.setParkingSlots(new java.util.ArrayList<>());
         parkingSystem.setSYSTEM_WALLET(new Wallet());
         
+        // Create test vehicles
         car = new Vehicle(1, VehicleType.CAR, 1000.0);
         motorcycle = new Vehicle(2, VehicleType.MOTORCYCLE, 500.0);
         bus = new Vehicle(3, VehicleType.BUS, 2000.0);
         
+        // Create test parking slots
         compactSlot = new ParkingSlot("C001", ParkingSlotType.COMPACT);
         regularSlot = new ParkingSlot("R001", ParkingSlotType.REGULAR);
         largeSlot = new ParkingSlot("L001", ParkingSlotType.LARGE);
         
+        // Register test data
         parkingSystem.addVehicle(car);
         parkingSystem.addVehicle(motorcycle);
         parkingSystem.addVehicle(bus);
@@ -41,26 +73,32 @@ public class ParkingSystemTest {
         parkingSystem.addParkingSlot(regularSlot);
         parkingSystem.addParkingSlot(largeSlot);
         
+        // Initialize test time window
         startTime = LocalDateTime.of(2024, 6, 1, 10, 0);
         endTime = LocalDateTime.of(2024, 6, 1, 12, 0);
     }
 
     @AfterEach
     public void tearDown() {
-        // Clean up static state after each test
+        // TEARDOWN: Clean up singleton static state for test independence
         parkingSystem.setVehicles(new java.util.ArrayList<>());
         parkingSystem.setBookings(new java.util.ArrayList<>());
         parkingSystem.setParkingSlots(new java.util.ArrayList<>());
         parkingSystem.setSYSTEM_WALLET(new Wallet());
     }
 
-    // ==================== Singleton Tests ====================
+    // ==================== SINGLETON PATTERN TESTS ====================
+    // Testing: Singleton instance management
+
     @Test
+    @DisplayName("Singleton: getInstance returns same instance")
     public void testParkingSystemSingleton() {
-        // TC-01: Verify ParkingSystem is a singleton
+        // ARRANGE: Get two references to singleton
+        // ACT: Call getInstance twice
         ParkingSystem system1 = ParkingSystem.getInstance();
         ParkingSystem system2 = ParkingSystem.getInstance();
         
+        // ASSERT: Verify same instance returned (reference equality)
         assertSame(system1, system2, "getInstance should return same instance");
     }
 

@@ -1,8 +1,30 @@
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit Tests for Booking class
+ * 
+ * Test Scaffolding:
+ * - @BeforeEach (setUp): Initializes test fixtures before each test
+ * - @AfterEach (tearDown): Cleans up resources after each test
+ * 
+ * Each test follows the AAA pattern:
+ * - Arrange: Set up test data and preconditions
+ * - Act: Execute the method being tested
+ * - Assert: Verify the results and object state
+ * 
+ * Stub objects: LocalDateTime, Vehicle, ParkingSlot used to simulate environment
+ * 
+ * Testing focus:
+ * - Object creation and state initialization
+ * - Status transitions (ACTIVE -> COMPLETED/CANCELLED)
+ * - Validation of business constraints
+ * - Boundary conditions with time values and amounts
+ */
 public class BookingTest {
     private Vehicle vehicle;
     private ParkingSlot slot;
@@ -17,12 +39,24 @@ public class BookingTest {
         endTime = LocalDateTime.of(2024, 6, 1, 12, 0);
     }
 
-    // ==================== Booking Constructor Tests ====================
+    @AfterEach
+    public void tearDown() {
+        vehicle = null;
+        slot = null;
+        startTime = null;
+        endTime = null;
+    }
+
+    // ==================== CONSTRUCTOR & INITIALIZATION TESTS ====================
+    // Testing: Booking creation and initial state
+
     @Test
     public void testBookingConstructor() {
-        // TC-01: Verify Booking constructor initializes correctly
+        // ARRANGE: All dependencies prepared in setUp()
+        // ACT: Create booking with constructor
         Booking booking = new Booking(101, vehicle, slot, startTime, endTime, 100.0);
         
+        // ASSERT: Verify all fields initialized and status is ACTIVE
         assertEquals(101, booking.getBookingId(), "Booking ID should match");
         assertEquals(vehicle, booking.getVehicle(), "Vehicle should match");
         assertEquals(slot, booking.getParkingSlot(), "Parking slot should match");

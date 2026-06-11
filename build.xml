@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ParkingSystem" default="test" basedir=".">
+    
+    <!-- ======================================== -->
+    <!-- PROJECT PROPERTIES & DEFINITIONS        -->
+    <!-- ======================================== -->
+    
+    <!-- Source and Build Directories -->
+    <property name="src.dir" value="src"/>
+    <property name="test.dir" value="test"/>
+    <property name="build.dir" value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="test.classes.dir" value="${build.dir}/test-classes"/>
+    <property name="reports.dir" value="${build.dir}/test-reports"/>
+    <property name="dist.dir" value="dist"/>
+    
+    <!-- JUnit and Compiler Configuration -->
+    <property name="java.version" value="11"/>
+    <property name="junit.version" value="5.9.2"/>
+    <property name="junit.jar" value="${user.home}/.m2/repository/org/junit/jupiter/junit-jupiter-api/${junit.version}/junit-jupiter-api-${junit.version}.jar"/>
+    
+    <!-- Path to JUnit 5 jars (adjust based on your local setup) -->
+    <property name="junit.engine.jar" value="${user.home}/.m2/repository/org/junit/jupiter/junit-jupiter-engine/${junit.version}/junit-jupiter-engine-${junit.version}.jar"/>
+    <property name="junit.launcher.jar" value="${user.home}/.m2/repository/org/junit/platform/junit-platform-launcher/1.9.2/junit-platform-launcher-1.9.2.jar"/>
+    <property name="junit.console.jar" value="${user.home}/.m2/repository/org/junit/platform/junit-platform-console-standalone/1.9.2/junit-platform-console-standalone-1.9.2.jar"/>
+    
+    <!-- ======================================== -->
+    <!-- PATH DEFINITIONS - CLASSPATH SETUP      -->
+    <!-- ======================================== -->
+    
+    <!-- Classpath for compilation -->
+    <path id="compile.classpath">
+        <fileset dir="${user.home}/.m2/repository/org/junit/jupiter" includes="*/*.jar"/>
+        <fileset dir="${user.home}/.m2/repository/org/junit/platform" includes="*/*.jar"/>
+    </path>
+    
+    <!-- Classpath for test execution -->
+    <path id="test.classpath">
+        <pathelement location="${classes.dir}"/>
+        <pathelement location="${test.classes.dir}"/>
+        <fileset dir="${user.home}/.m2/repository/org/junit/jupiter" includes="*/*.jar"/>
+        <fileset dir="${user.home}/.m2/repository/org/junit/platform" includes="*/*.jar"/>
+    </path>
+    
+    <!-- ======================================== -->
+    <!-- TARGETS: BUILD LIFECYCLE                -->
+    <!-- ======================================== -->
+    
+    <!-- TARGET: VALIDATE -->
+    <target name="validate" description="Validate the project structure">
+        <echo message="========== VALIDATING PROJECT STRUCTURE =========="/>
+        <fail unless="src.dir" message="Source directory not defined"/>
+        <fail unless="test.dir" message="Test directory not defined"/>
+        <echo message="✓ Project structure is valid"/>
+        <echo message="  Source directory: ${src.dir}"/>
+        <echo message="  Test directory: ${test.dir}"/>
+    </target>
+    
+    <!-- TARGET: INIT -->
+    <target name="init" depends="validate" description="Initialize build directories">
+        <echo message="========== INITIALIZING BUILD DIRECTORIES =========="/>
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${classes.dir}"/>
+        <mkdir dir="${test.classes.dir}"/>
+        <mkdir dir="${reports.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+        <echo message="✓ Build directories created"/>
+    </target>
+    
+    <!-- TARGET: COMPILE - Compiles source code -->
+    <target name="compile" depends="init" description="Compile source code">
+        <echo message="========== COMPILING SOURCE CODE =========="/>
+        <javac srcdir="${src.dir}" 
+               destdir="${classes.dir}" 
+               source="${java.version}" 
+               target="${java.version}"
+               includeantruntime="false"
+               debug="true"
+               verbose="false">
+            <classpath refid="compile.classpath"/>
+        </javac>
+        <echo message="✓ Source code compiled successfully"/>
+        <echo message="  Output: ${classes.dir}"/>
+    </target>
+    
+    <!-- TARGET: COMPILE-TESTS - Compiles test code -->
+    <target name="compile-tests" depends="compile" description="Compile test code">
+        <echo message="========== COMPILING TEST CODE =========="/>
+        <javac srcdir="${test.dir}" 
+               destdir="${test.classes.dir}" 
+               source="${java.version}" 
+               target="${java.version}"
+               includeantruntime="false"
+               debug="true"
+               verbose="false">
+            <classpath>
+                <pathelement location="${classes.dir}"/>
+                <path refid="compile.classpath"/>
+            </classpath>
+        </javac>
+        <echo message="✓ Test code compiled successfully"/>
+        <echo message="  Output: ${test.classes.dir}"/>
+    </target>
+    
+    <!-- TARGET: TEST - Runs JUnit tests using JUnit Platform Console Launcher -->
+    <target name="test" depends="compile-tests" description="Run JUnit tests">
+        <echo message="========== RUNNING UNIT TESTS =========="/>
+        <java jar="${junit.console.jar}" 
+              fork="true" 
+              failonerror="true"
+              dir="${basedir}">
+            <arg value="--scan-classpath"/>
+            <arg value="${test.classes.dir}"/>
+            <arg value="--reports-dir=${reports.dir}"/>
+            <classpath>
+                <pathelement location="${classes.dir}"/>
+                <pathelement location="${test.classes.dir}"/>
+                <path refid="test.classpath"/>
+            </classpath>
+        </java>
+        <echo message="✓ All tests passed!"/>
+        <echo message="  Test reports: ${reports.dir}"/>
+    </target>
+    
+    <!-- TARGET: TEST-SINGLE - Run a specific test class -->
+    <target name="test-single" depends="compile-tests" description="Run a single test class (usage: ant test-single -DtestClass=WalletTest)">
+        <echo message="========== RUNNING SINGLE TEST =========="/>
+        <fail unless="testClass" message="Please specify testClass: ant test-single -DtestClass=WalletTest"/>
+        <java classname="org.junit.platform.console.ConsoleLauncher"
+              classpathref="test.classpath"
+              fork="true"
+              failonerror="true">
+            <arg value="--scan-classpath"/>
+            <arg value="${test.classes.dir}"/>
+            <arg value="--select-class=${testClass}"/>
+        </java>
+        <echo message="✓ Test ${testClass} executed"/>
+    </target>
+    
+    <!-- TARGET: PACKAGE - Creates JAR file -->
+    <target name="package" depends="compile" description="Package compiled classes into JAR">
+        <echo message="========== PACKAGING APPLICATION =========="/>
+        <jar jarfile="${dist.dir}/parking-system.jar" basedir="${classes.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="ParkingSystem"/>
+                <attribute name="Implementation-Title" value="Parking System"/>
+                <attribute name="Implementation-Version" value="1.0"/>
+            </manifest>
+        </jar>
+        <echo message="✓ JAR file created: ${dist.dir}/parking-system.jar"/>
+    </target>
+    
+    <!-- TARGET: CLEAN - Removes build artifacts -->
+    <target name="clean" description="Remove build artifacts">
+        <echo message="========== CLEANING BUILD ARTIFACTS =========="/>
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+        <echo message="✓ Build artifacts cleaned"/>
+    </target>
+    
+    <!-- TARGET: CLEAN-ALL - Complete project cleanup -->
+    <target name="clean-all" depends="clean" description="Complete cleanup including reports">
+        <delete dir="${reports.dir}"/>
+        <echo message="✓ All artifacts and reports removed"/>
+    </target>
+    
+    <!-- TARGET: REBUILD - Clean and rebuild -->
+    <target name="rebuild" depends="clean, compile" description="Clean and rebuild project">
+        <echo message="✓ Project rebuilt successfully"/>
+    </target>
+    
+    <!-- TARGET: BUILD - Compile and package -->
+    <target name="build" depends="compile, package" description="Build the complete project">
+        <echo message="✓ Build complete!"/>
+    </target>
+    
+    <!-- ======================================== -->
+    <!-- DEFAULT TARGET                          -->
+    <!-- ======================================== -->
+    
+    <target name="help" description="Display build targets">
+        <echo message="======== PARKING SYSTEM - BUILD TARGETS ========"/>
+        <echo message="Usage: ant [target]"/>
+        <echo message=""/>
+        <echo message="Main Targets:"/>
+        <echo message="  validate       - Validate project structure"/>
+        <echo message="  compile        - Compile source code"/>
+        <echo message="  compile-tests  - Compile test code"/>
+        <echo message="  test           - Run all JUnit tests (DEFAULT)"/>
+        <echo message="  package        - Create JAR file"/>
+        <echo message="  build          - Compile + Package"/>
+        <echo message="  rebuild        - Clean + Compile"/>
+        <echo message=""/>
+        <echo message="Utility Targets:"/>
+        <echo message="  test-single    - Run specific test (ant test-single -DtestClass=WalletTest)"/>
+        <echo message="  clean          - Remove build artifacts"/>
+        <echo message="  clean-all      - Remove all artifacts and reports"/>
+        <echo message=""/>
+        <echo message="Build Lifecycle:"/>
+        <echo message="  Validate → Compile → Test → Package"/>
+    </target>
+
+</project>

@@ -1,7 +1,25 @@
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit Tests for Wallet class
+ * 
+ * Test Scaffolding:
+ * - @BeforeEach (setUp): Initializes test fixtures before each test
+ * - @AfterEach (tearDown): Cleans up resources after each test
+ * 
+ * Each test follows the AAA pattern:
+ * - Arrange: Set up test data and preconditions
+ * - Act: Execute the method being tested
+ * - Assert: Verify the results and object state
+ * 
+ * Tests cover:
+ * - Normal paths: valid inputs with expected outputs
+ * - Error/Exception paths: invalid inputs that should throw exceptions
+ * - Boundary conditions: zero, negative, large values
+ */
 public class WalletTest {
     private Wallet wallet;
     private Wallet targetWallet;
@@ -12,11 +30,22 @@ public class WalletTest {
         targetWallet = new Wallet();
     }
 
-    // ==================== Wallet Constructor Tests ====================
+    @AfterEach
+    public void tearDown() {
+        wallet = null;
+        targetWallet = null;
+    }
+
+    // ==================== CONSTRUCTOR TESTS ====================
+    // Testing unit: Wallet initialization with various input conditions
+
     @Test
     public void testWalletDefaultConstructor() {
-        // TC-01: Verify default constructor initializes balance to 0
+        // ARRANGE: Constructor is implicitly called
+        // ACT: Create wallet with default constructor
         Wallet newWallet = new Wallet();
+        
+        // ASSERT: Verify initialization
         assertEquals(0.0, newWallet.getBalance(), "Default wallet should have 0 balance");
     }
 

@@ -1,7 +1,28 @@
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit Tests for Vehicle class
+ * 
+ * Test Scaffolding:
+ * - @BeforeEach (setUp): Initializes test fixtures before each test
+ * - @AfterEach (tearDown): Cleans up resources after each test
+ * 
+ * Each test follows the AAA pattern:
+ * - Arrange: Set up test data and preconditions
+ * - Act: Execute the method being tested
+ * - Assert: Verify the results and object state
+ * 
+ * Tests are independent - each test can run in any order
+ * 
+ * Testing focus:
+ * - Constructor validation with different parameters
+ * - Dependency injection (Wallet integration)
+ * - State verification through getters
+ * - Boundary conditions and edge cases
+ */
 public class VehicleTest {
     private Wallet testWallet;
 
@@ -10,12 +31,21 @@ public class VehicleTest {
         testWallet = new Wallet(1000.0);
     }
 
-    // ==================== Vehicle Constructor Tests ====================
+    @AfterEach
+    public void tearDown() {
+        testWallet = null;
+    }
+
+    // ==================== CONSTRUCTOR TESTS ====================
+    // Testing: Vehicle initialization with different input parameters
+
     @Test
     public void testVehicleConstructorWithWallet() {
-        // TC-01: Verify Vehicle constructor with Wallet parameter
+        // ARRANGE: Wallet is prepared in setUp()
+        // ACT: Create vehicle with wallet object
         Vehicle vehicle = new Vehicle(101, VehicleType.CAR, testWallet);
         
+        // ASSERT: Verify all fields initialized correctly
         assertEquals(101, vehicle.getVehicleId(), "Vehicle ID should match");
         assertEquals(VehicleType.CAR, vehicle.getVehicleType(), "Vehicle type should match");
         assertEquals(1000.0, vehicle.getBalance(), "Wallet balance should match");
