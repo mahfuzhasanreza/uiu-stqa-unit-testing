@@ -2,95 +2,7 @@
 
 ## 0) Team Members
 
-* **Student ID: 011221203** - Primary Tester (Individual Submission)
-
----
-
-## Testing Methodology & Framework
-
-### Unit Testing Approach
-
-This test suite follows comprehensive **unit testing** principles where each class is tested in isolation:
-
-* **Unit**: Individual methods and classes (Wallet, Vehicle, ParkingSlot, Booking, ParkingSystem)
-* **Isolation**: Each unit tested independently with mocks/stubs for dependencies
-* **Assertions**: JUnit assertions verify outputs and object state changes
-
-### Test Automation
-
-The test suite provides:
-* **Automated execution** of 148 test cases
-* **Automatic result comparison** (expected vs actual)
-* **Efficient re-execution** without manual intervention
-* **Apache Ant build script** for build lifecycle automation
-
-### Test Scaffolding
-
-Test infrastructure includes:
-
-| Component | Purpose | Example |
-|-----------|---------|---------|
-| **Fixtures** | Reusable test data initialized in @BeforeEach | Wallet objects, Vehicle instances |
-| **Test Harness** | System of interconnected objects | ParkingSystem with multiple vehicles and slots |
-| **Stubs** | Simplified dependencies | LocalDateTime objects simulating time |
-| **Mocks** | Replace unavailable components | Wallet acts as mock for financial system |
-
-### JUnit Framework & Annotations
-
-**Key Annotations Used:**
-- `@BeforeEach`: Initialize fixtures before each test (ensures test independence)
-- `@AfterEach`: Clean up resources after each test (teardown phase)
-- `@Test`: Mark methods as test cases
-- `@DisplayName`: Descriptive test names
-
-**Test Structure (AAA Pattern):**
-1. **Arrange**: Set up test data and preconditions
-2. **Act**: Execute the unit being tested
-3. **Assert**: Verify results using JUnit assertions
-
-### Assertions Used
-
-| Assertion | Purpose | Usage |
-|-----------|---------|-------|
-| `assertEquals(expected, actual)` | Verify exact value match | Balance calculations, IDs |
-| `assertTrue(condition)` | Verify boolean condition | State checks (isActive, etc.) |
-| `assertFalse(condition)` | Verify condition is false | Incompatibility checks |
-| `assertThrows(ExceptionClass, executable)` | Verify exception thrown | Invalid amount checks |
-| `assertNotNull(object)` | Verify object exists | Wallet/Slot not null |
-| `assertNotSame(obj1, obj2)` | Verify different objects | Multiple vehicle independence |
-| `assertEquals(expected, actual, delta)` | Verify float equality with tolerance | Precise financial calculations |
-
-### Best Practices Implemented
-
-✓ **One scenario per test**: Each test verifies single behavior  
-✓ **Test independence**: @AfterEach ensures no state carryover  
-✓ **Assertions over print statements**: All verification via assertions  
-✓ **Exception testing**: Comprehensive error condition coverage  
-✓ **Deterministic results**: Repeatable, no random dependencies  
-✓ **Boundary testing**: Zero, negative, large values tested  
-✓ **Clear naming**: Test names describe what is being tested  
-
-### Build Lifecycle & Apache Ant
-
-The `build.xml` script automates the complete build lifecycle:
-
-```
-Validate → Compile → Test → Package → Deploy
-```
-
-**Ant Targets:**
-- `validate`: Check project structure
-- `compile`: Compile source code to classes.dir
-- `compile-tests`: Compile test code
-- `test`: Run all JUnit tests (DEFAULT)
-- `package`: Create distribution JAR
-- `clean`: Remove build artifacts
-- `rebuild`: Clean + compile
-- `test-single`: Run specific test class
-
-**Path Management:**
-- `compile.classpath`: Dependencies for compilation
-- `test.classpath`: Runtime dependencies for tests
+* **011221203** - Mahfuz Hasan Reza
 
 ---
 
@@ -251,19 +163,10 @@ Validate → Compile → Test → Package → Deploy
 
 ## B) Defects List
 
-### **Defect ID: BUG-01**
+### **Defect ID: 01**
 
 * **Class.Method:** `ParkingSlot.isCompatible(VehicleType, LocalDateTime, LocalDateTime)`
-* **Location:** [src/ParkingSlot.java](src/ParkingSlot.java#L37)
 * **Description:** The MICROCAR case in the compatibility switch statement is missing a `break` statement. This causes the code to fall through to the `default` case which returns `false`. As a result, MICROCAR cannot book any parking slots, even though the documentation specifies it should be compatible with COMPACT and REGULAR slots. This is a critical logic error that violates the documented business rules.
-* **Steps to Reproduce:** 
-  1. Create a MICROCAR vehicle
-  2. Create a LARGE parking slot
-  3. Attempt to check compatibility with `isCompatible(VehicleType.MICROCAR, startTime, endTime)`
-  4. Observe that it returns `false` despite MICROCAR being documented as compatible with LARGE (though this specific case should fail)
-  5. Even with COMPACT or REGULAR slots, the method returns `false`
-* **Expected Behavior:** According to documentation: MICROCAR should be compatible with COMPACT and REGULAR slots only.
-* **Actual Behavior:** All compatibility checks return `false` for MICROCAR due to missing `break`.
 * **Suggested Fix:** Add `break;` statement after the MICROCAR compatibility check (after line 37):
 ```java
 case MICROCAR:
@@ -273,17 +176,10 @@ case MICROCAR:
     break;  // Add this line
 ```
 
-### **Defect ID: BUG-02**
+### **Defect ID: 02**
 
 * **Class.Method:** `Booking.Booking(int, Vehicle, ParkingSlot, LocalDateTime, LocalDateTime, double)`
-* **Location:** [src/Booking.java](src/Booking.java#L9)
 * **Description:** The Booking constructor does not validate that `endTime` is after `startTime`. While `ParkingSystem.book()` performs this validation before creating a Booking, the Booking class can still be instantiated directly with invalid times. This creates an inconsistency: direct instantiation can create Bookings with `endTime <= startTime`, but bookings through the system cannot. This violates defensive programming principles and the business rule that "end must be strictly after start."
-* **Steps to Reproduce:**
-  1. Create a Booking directly using the constructor
-  2. Pass `endTime` that is equal to or before `startTime`
-  3. Observe that the Booking is created successfully
-* **Expected Behavior:** Booking constructor should reject invalid time ranges by throwing `IllegalBookingTimeException`.
-* **Actual Behavior:** Booking is created successfully with invalid times.
 * **Suggested Fix:** Add validation in Booking constructor:
 ```java
 public Booking(int bookingId, Vehicle vehicle, ParkingSlot parkingSlot, 
@@ -291,16 +187,14 @@ public Booking(int bookingId, Vehicle vehicle, ParkingSlot parkingSlot,
     if (endTime.isBefore(startTime) || endTime.isEqual(startTime)) {
         throw new IllegalBookingTimeException();
     }
-    // ... rest of constructor
+    // ... rest of constructor logic
 }
 ```
 
-### **Defect ID: BUG-03**
+### **Defect ID: 03**
 
 * **Class.Method:** `ParkingSystem.getInstance()`
-* **Location:** [src/ParkingSystem.java](src/ParkingSystem.java#L11)
 * **Description:** The ParkingSystem uses a static singleton instance that persists across test execution and application lifetime. While this is intentional for the singleton pattern, it creates a significant testing challenge: the system state is not automatically reset between test cases, leading to test interdependency and potential failures if tests run in a specific order. Tests must explicitly clean up the static state, which is not guaranteed to happen if a test fails.
-* **Impact:** Test isolation is compromised. One test's bookings, vehicles, and slots can affect subsequent tests. Teardown methods are essential but easily forgotten.
 * **Suggested Fix:** Implement a reset/clear mechanism for testing:
 ```java
 public static void resetInstance() {
@@ -315,12 +209,10 @@ public void clearAllData() {
 }
 ```
 
-### **Defect ID: BUG-04**
+### **Defect ID: 04**
 
 * **Class.Method:** `ParkingSlot.isCompatible(VehicleType, LocalDateTime, LocalDateTime)`
-* **Location:** [src/ParkingSlot.java](src/ParkingSlot.java#L23-L45)
 * **Description:** The TRUCK vehicle type has no case in the compatibility switch statement, causing it to fall through to the `default` case which returns `false`. This means TRUCK is incompatible with all slot types. While this aligns with the documentation (which lists no compatible slots for TRUCK), the design is intentional but not explicitly clear in comments. This could confuse future maintainers who might expect TRUCK to be handled like other vehicle types.
-* **Impact:** TRUCK vehicles cannot be used in the system. This is likely intentional but represents a missing feature or incomplete implementation.
 * **Suggested Fix (Optional):** If TRUCK should be supported in the future, add a case for it. If intentional, add a comment clarifying that TRUCK has no valid parking slots:
 ```java
 case TRUCK:
@@ -332,65 +224,8 @@ case TRUCK:
 
 ## C) Individual Contribution
 
-* **Student (011201):** 
-  - Designed and implemented 148 comprehensive unit tests across 5 test classes (WalletTest, VehicleTest, ParkingSlotTest, BookingTest, ParkingSystemTest)
-  - Conducted boundary value analysis, edge case testing, and equivalence partitioning
-  - Performed code path analysis to identify and test all branches in the compatibility matrix
-  - Discovered 4 significant defects through systematic testing: the MICROCAR compatibility bug (BUG-01), Booking constructor validation gap (BUG-02), singleton state management issue (BUG-03), and the intentional-but-undocumented TRUCK exclusion (BUG-04)
-  - Analyzed financial transaction flows through wallet operations and booking settlement logic
-  - Verified pricing formula implementation with multiple vehicle and slot type combinations
-  - Tested time window availability and overlap detection logic
-  - Created this comprehensive test report documenting verdicts, observations, and suggested fixes
-  - Ensured test independence by implementing proper setUp() and tearDown() methods for state reset
-
----
-
-## Test Summary Statistics
-
-* **Total Tests Written:** 148
-* **Total Tests Passed:** 147
-* **Total Tests Failed:** 1 (BUG-01 - MICROCAR compatibility)
-* **Pass Rate:** 99.32%
-* **Classes Tested:** 5 (Wallet, Vehicle, ParkingSlot, Booking, ParkingSystem)
-* **Defects Found:** 4
-* **Critical Defects:** 1 (BUG-01)
-* **Major Defects:** 2 (BUG-02, BUG-03)
-* **Minor Defects:** 1 (BUG-04)
-
----
-
-## Notes on Test Design
-
-### Test Organization
-Tests are organized by method and concern, using descriptive names that indicate what is being tested. Each test follows the AAA (Arrange-Act-Assert) pattern for clarity.
-
-### State Management
-All tests include proper setUp() and tearDown() methods to manage the ParkingSystem singleton state, ensuring test isolation.
-
-### Boundary Testing
-Tests include boundary values (zero amounts, negative amounts, edge times, limit values) to catch off-by-one errors and boundary condition handling.
-
-### Integration Testing
-ParkingSystemTest includes integration tests that verify end-to-end workflows like booking, completing, and cancelling with proper fund transfers.
-
-### Precision Testing
-Wallet and pricing tests verify decimal precision to ensure financial calculations are accurate.
-
----
-
-## Testing Approach Documentation
-
-For detailed information about unit testing methodology, test automation, and build system configuration, please refer to [BUILD_AND_TEST_GUIDE.md](BUILD_AND_TEST_GUIDE.md).
-
-This guide covers:
-- Unit testing principles and isolation techniques
-- JUnit 5 framework and annotations
-- AAA pattern implementation (Arrange-Act-Assert)
-- Test scaffolding (fixtures, harnesses, stubs, mocks)
-- Test independence and best practices
-- Apache Ant build automation
-- Build lifecycle and targets
-- Mocking strategies
-- Test execution and maintenance
+* **Mahfuz Hasan Reza (011221203):** 
+  - Implemented all unit tests for Wallet, Vehicle, ParkingSlot, Booking, and ParkingSystem classes.
+  - Write the report
 
 ---
