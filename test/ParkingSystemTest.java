@@ -6,32 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit Tests for ParkingSystem class
- * 
- * Test Scaffolding:
- * - @BeforeEach (setUp): Initializes test fixtures - test harness with vehicles, slots
- * - @AfterEach (tearDown): Cleans up static singleton state after each test
- * 
- * Singleton Management: ParkingSystem uses static instance that persists
- * Therefore, tearDown() explicitly resets all collections to ensure test independence
- * 
- * Each test follows the AAA pattern:
- * - Arrange: Set up test data, vehicles, parking slots
- * - Act: Execute the method being tested
- * - Assert: Verify the results, state changes, and financial transactions
- * 
- * Mock objects: LocalDateTime stubs simulate time windows
- * Test harness: Multiple vehicles and slots represent the parking system environment
- * 
- * Testing focus:
- * - Booking workflow (create -> complete/cancel)
- * - Pricing formula with all vehicle/slot type combinations
- * - Financial transactions (wallet transfers, fund distribution)
- * - Error handling and validation (boundary conditions)
- * - Availability logic and conflict detection
- * - System state management and data storage
- */
+
 public class ParkingSystemTest {
     private ParkingSystem parkingSystem;
     private Vehicle car;
@@ -45,26 +20,21 @@ public class ParkingSystemTest {
 
     @BeforeEach
     public void setUp() {
-        // ARRANGE: Initialize parking system test harness
         parkingSystem = ParkingSystem.getInstance();
         
-        // Reset static state for test isolation
         parkingSystem.setVehicles(new java.util.ArrayList<>());
         parkingSystem.setBookings(new java.util.ArrayList<>());
         parkingSystem.setParkingSlots(new java.util.ArrayList<>());
         parkingSystem.setSYSTEM_WALLET(new Wallet());
         
-        // Create test vehicles
         car = new Vehicle(1, VehicleType.CAR, 1000.0);
         motorcycle = new Vehicle(2, VehicleType.MOTORCYCLE, 500.0);
         bus = new Vehicle(3, VehicleType.BUS, 2000.0);
         
-        // Create test parking slots
         compactSlot = new ParkingSlot("C001", ParkingSlotType.COMPACT);
         regularSlot = new ParkingSlot("R001", ParkingSlotType.REGULAR);
         largeSlot = new ParkingSlot("L001", ParkingSlotType.LARGE);
         
-        // Register test data
         parkingSystem.addVehicle(car);
         parkingSystem.addVehicle(motorcycle);
         parkingSystem.addVehicle(bus);
@@ -73,39 +43,32 @@ public class ParkingSystemTest {
         parkingSystem.addParkingSlot(regularSlot);
         parkingSystem.addParkingSlot(largeSlot);
         
-        // Initialize test time window
         startTime = LocalDateTime.of(2024, 6, 1, 10, 0);
         endTime = LocalDateTime.of(2024, 6, 1, 12, 0);
     }
 
     @AfterEach
     public void tearDown() {
-        // TEARDOWN: Clean up singleton static state for test independence
         parkingSystem.setVehicles(new java.util.ArrayList<>());
         parkingSystem.setBookings(new java.util.ArrayList<>());
         parkingSystem.setParkingSlots(new java.util.ArrayList<>());
         parkingSystem.setSYSTEM_WALLET(new Wallet());
     }
 
-    // ==================== SINGLETON PATTERN TESTS ====================
-    // Testing: Singleton instance management
+    // Singleton tests
 
     @Test
     @DisplayName("Singleton: getInstance returns same instance")
     public void testParkingSystemSingleton() {
-        // ARRANGE: Get two references to singleton
-        // ACT: Call getInstance twice
         ParkingSystem system1 = ParkingSystem.getInstance();
         ParkingSystem system2 = ParkingSystem.getInstance();
         
-        // ASSERT: Verify same instance returned (reference equality)
         assertSame(system1, system2, "getInstance should return same instance");
     }
 
-    // ==================== Add Vehicle Tests ====================
+    // Add Vehicle tests
     @Test
     public void testAddVehicle() {
-        // TC-02: Verify adding vehicle to system
         ParkingSystem newSystem = ParkingSystem.getInstance();
         newSystem.setVehicles(new java.util.ArrayList<>());
         
@@ -118,7 +81,6 @@ public class ParkingSystemTest {
 
     @Test
     public void testAddMultipleVehicles() {
-        // TC-03: Verify adding multiple vehicles
         ParkingSystem newSystem = ParkingSystem.getInstance();
         newSystem.setVehicles(new java.util.ArrayList<>());
         
@@ -133,10 +95,9 @@ public class ParkingSystemTest {
         assertEquals(3, newSystem.getVehicles().size(), "All vehicles should be added");
     }
 
-    // ==================== Add ParkingSlot Tests ====================
+    // Add Parking Slot tests
     @Test
     public void testAddParkingSlot() {
-        // TC-04: Verify adding parking slot to system
         ParkingSystem newSystem = ParkingSystem.getInstance();
         newSystem.setParkingSlots(new java.util.ArrayList<>());
         
@@ -149,7 +110,6 @@ public class ParkingSystemTest {
 
     @Test
     public void testAddMultipleParkingSlots() {
-        // TC-05: Verify adding multiple parking slots
         ParkingSystem newSystem = ParkingSystem.getInstance();
         newSystem.setParkingSlots(new java.util.ArrayList<>());
         
@@ -164,10 +124,9 @@ public class ParkingSystemTest {
         assertEquals(3, newSystem.getParkingSlots().size(), "All slots should be added");
     }
 
-    // ==================== Get Available Parking Slots Tests ====================
+    // Get available parking slots tests
     @Test
     public void testGetAvailableSlotsForCAR() {
-        // TC-06: Verify getting available slots for CAR vehicle
         List<ParkingSlot> available = parkingSystem.getAvailableParkingSlots(car, startTime, endTime);
         
         assertEquals(2, available.size(), "CAR should have 2 available slots (REGULAR, LARGE)");
@@ -178,7 +137,6 @@ public class ParkingSystemTest {
 
     @Test
     public void testGetAvailableSlotsForMOTORCYCLE() {
-        // TC-07: Verify getting available slots for MOTORCYCLE
         List<ParkingSlot> available = parkingSystem.getAvailableParkingSlots(motorcycle, startTime, endTime);
         
         assertEquals(3, available.size(), "MOTORCYCLE should have 3 available slots");
@@ -189,7 +147,6 @@ public class ParkingSystemTest {
 
     @Test
     public void testGetAvailableSlotsForBUS() {
-        // TC-08: Verify getting available slots for BUS
         List<ParkingSlot> available = parkingSystem.getAvailableParkingSlots(bus, startTime, endTime);
         
         assertEquals(1, available.size(), "BUS should have 1 available slot (LARGE)");
@@ -198,7 +155,6 @@ public class ParkingSystemTest {
 
     @Test
     public void testGetAvailableSlotsForBICYCLE() {
-        // TC-09: Verify getting available slots for BICYCLE
         Vehicle bicycle = new Vehicle(4, VehicleType.BICYCLE, 200.0);
         parkingSystem.addVehicle(bicycle);
         
@@ -212,7 +168,6 @@ public class ParkingSystemTest {
 
     @Test
     public void testGetAvailableSlotsAfterBooking() {
-        // TC-10: Verify available slots decrease after booking
         List<ParkingSlot> availableBefore = parkingSystem.getAvailableParkingSlots(car, startTime, endTime);
         assertEquals(2, availableBefore.size(), "2 slots available before booking");
         
@@ -224,7 +179,6 @@ public class ParkingSystemTest {
 
     @Test
     public void testGetAvailableSlotsInactiveSlot() {
-        // TC-11: Verify inactive slots not included in available
         regularSlot.deactivate();
         
         List<ParkingSlot> available = parkingSystem.getAvailableParkingSlots(car, startTime, endTime);
@@ -233,10 +187,9 @@ public class ParkingSystemTest {
         assertFalse(available.contains(regularSlot), "Inactive slot should not be available");
     }
 
-    // ==================== Book Parking Tests ====================
+    // Book parking slot tests
     @Test
     public void testBookValidBooking() {
-        // TC-12: Verify creating a valid booking
         double initialBalance = car.getBalance();
         
         Booking booking = parkingSystem.book(car, regularSlot, startTime, endTime);
@@ -249,7 +202,6 @@ public class ParkingSystemTest {
 
     @Test
     public void testBookInvalidTimeRange() {
-        // TC-13: Verify booking with end time before start time fails
         LocalDateTime invalidEnd = startTime.minusHours(1);
         
         assertThrows(IllegalBookingTimeException.class, 
@@ -259,7 +211,6 @@ public class ParkingSystemTest {
 
     @Test
     public void testBookEqualTimesThrowsException() {
-        // TC-14: Verify booking with equal start and end times fails
         assertThrows(IllegalBookingTimeException.class, 
                 () -> parkingSystem.book(car, regularSlot, startTime, startTime),
                 "Booking with equal times should fail");
@@ -267,7 +218,6 @@ public class ParkingSystemTest {
 
     @Test
     public void testBookIncompatibleVehicleType() {
-        // TC-15: Verify booking with incompatible vehicle type fails
         assertThrows(IllegalArgumentException.class, 
                 () -> parkingSystem.book(bus, compactSlot, startTime, endTime),
                 "BUS cannot book COMPACT slot");
@@ -275,7 +225,6 @@ public class ParkingSystemTest {
 
     @Test
     public void testBookInsufficientFunds() {
-        // TC-16: Verify booking fails when vehicle has insufficient funds
         Vehicle poorCar = new Vehicle(50, VehicleType.CAR, 1.0);
         parkingSystem.addVehicle(poorCar);
         
@@ -286,7 +235,6 @@ public class ParkingSystemTest {
 
     @Test
     public void testBookOverlappingBooking() {
-        // TC-17: Verify booking overlapping time window fails
         Booking booking1 = parkingSystem.book(car, regularSlot, startTime, endTime);
         
         LocalDateTime newStart = LocalDateTime.of(2024, 6, 1, 11, 0);
@@ -301,8 +249,6 @@ public class ParkingSystemTest {
 
     @Test
     public void testBookPricingCalculation() {
-        // TC-18: Verify booking price calculation
-        // 2 hours, CAR rate (1.0), REGULAR multiplier (1.0) = 2 * 10 * 1.0 * 1.0 = 20
         double initialBalance = car.getBalance();
         
         Booking booking = parkingSystem.book(car, regularSlot, startTime, endTime);
@@ -313,13 +259,11 @@ public class ParkingSystemTest {
 
     @Test
     public void testBookPricingWithVehicleType() {
-        // TC-19: Verify pricing with different vehicle types
         Vehicle bicycle = new Vehicle(6, VehicleType.BICYCLE, 100.0);
         parkingSystem.addVehicle(bicycle);
         ParkingSlot handicappedSlot = new ParkingSlot("H001", ParkingSlotType.HANDICAPPED);
         parkingSystem.addParkingSlot(handicappedSlot);
         
-        // 2 hours, BICYCLE rate (0.2), HANDICAPPED multiplier (1.2) = 2 * 10 * 0.2 * 1.2 = 4.8
         Booking booking = parkingSystem.book(bicycle, handicappedSlot, startTime, endTime);
         
         assertEquals(4.8, booking.getAmount(), "BICYCLE + HANDICAPPED rate calculation");
@@ -327,7 +271,6 @@ public class ParkingSystemTest {
 
     @Test
     public void testBookTransfersFundsToSystem() {
-        // TC-20: Verify funds transferred to system wallet
         double systemBalanceBefore = parkingSystem.getBalance();
         double carBalanceBefore = car.getBalance();
         
@@ -339,7 +282,6 @@ public class ParkingSystemTest {
 
     @Test
     public void testBookMultipleBookings() {
-        // TC-21: Verify multiple bookings work correctly
         Booking booking1 = parkingSystem.book(car, regularSlot, startTime, endTime);
         
         LocalDateTime start2 = LocalDateTime.of(2024, 6, 2, 10, 0);
@@ -351,10 +293,9 @@ public class ParkingSystemTest {
         assertEquals(2, booking2.getBookingId(), "Second booking ID");
     }
 
-    // ==================== Complete Booking Tests ====================
+    // Complete booking tests
     @Test
     public void testCompleteBooking() {
-        // TC-22: Verify completing a booking
         Booking booking = parkingSystem.book(car, regularSlot, startTime, endTime);
         double systemBalanceBefore = parkingSystem.getBalance();
         double slotBalanceBefore = regularSlot.getBalance();
@@ -368,19 +309,16 @@ public class ParkingSystemTest {
 
     @Test
     public void testCompleteBookingDistribution() {
-        // TC-23: Verify 80/20 distribution on completion
         Booking booking = parkingSystem.book(car, regularSlot, startTime, endTime);
-        double bookingAmount = booking.getAmount(); // 20.0
+        double bookingAmount = booking.getAmount();
         
         parkingSystem.completeBooking(booking);
         
         assertEquals(bookingAmount * 0.8, regularSlot.getBalance(), 0.01, "Slot gets 80%");
-        // System keeps 20% (0.2 * 20 = 4.0)
     }
 
     @Test
     public void testCompleteBookingWalletTransfer() {
-        // TC-24: Verify funds transferred from system to slot wallet
         Booking booking = parkingSystem.book(car, regularSlot, startTime, endTime);
         
         parkingSystem.completeBooking(booking);
@@ -388,10 +326,9 @@ public class ParkingSystemTest {
         assertTrue(regularSlot.getBalance() > 0, "Slot wallet should have funds");
     }
 
-    // ==================== Cancel Booking Tests ====================
+    // Cancel booking tests
     @Test
     public void testCancelBooking() {
-        // TC-25: Verify cancelling a booking
         Booking booking = parkingSystem.book(car, regularSlot, startTime, endTime);
         double carBalanceBefore = car.getBalance();
         
@@ -403,9 +340,8 @@ public class ParkingSystemTest {
 
     @Test
     public void testCancelBookingDistribution() {
-        // TC-26: Verify 90/10 distribution on cancellation
         Booking booking = parkingSystem.book(car, regularSlot, startTime, endTime);
-        double bookingAmount = booking.getAmount(); // 20.0
+        double bookingAmount = booking.getAmount();
         double carBalanceAfterBooking = car.getBalance();
         
         parkingSystem.cancelBooking(booking);
@@ -415,7 +351,6 @@ public class ParkingSystemTest {
 
     @Test
     public void testCancelBookingRefund() {
-        // TC-27: Verify vehicle receives 90% refund on cancellation
         double initialBalance = car.getBalance();
         Booking booking = parkingSystem.book(car, regularSlot, startTime, endTime);
         
@@ -424,10 +359,9 @@ public class ParkingSystemTest {
         assertEquals(initialBalance - 2.0, car.getBalance(), 0.01, "Net loss is 10% (20 * 0.1)");
     }
 
-    // ==================== System Wallet Tests ====================
+    // System wallet tests
     @Test
     public void testSystemWalletReceivesFunds() {
-        // TC-28: Verify system wallet receives all booking funds
         parkingSystem.book(car, regularSlot, startTime, endTime);
         
         assertEquals(20.0, parkingSystem.getBalance(), 0.01, "System should have 20.0");
@@ -435,28 +369,23 @@ public class ParkingSystemTest {
 
     @Test
     public void testSystemWalletFundsAfterCompletion() {
-        // TC-29: Verify system retains 20% after completion
         Booking booking = parkingSystem.book(car, regularSlot, startTime, endTime);
         parkingSystem.completeBooking(booking);
         
-        // System received 20, gave away 16 (80%), keeps 4 (20%)
         assertEquals(4.0, parkingSystem.getBalance(), 0.01, "System keeps 20%");
     }
 
     @Test
     public void testSystemWalletFundsAfterCancellation() {
-        // TC-30: Verify system retains 10% after cancellation
         Booking booking = parkingSystem.book(car, regularSlot, startTime, endTime);
         parkingSystem.cancelBooking(booking);
         
-        // System received 20, gave back 18 (90%), keeps 2 (10%)
         assertEquals(2.0, parkingSystem.getBalance(), 0.01, "System keeps 10%");
     }
 
-    // ==================== Pricing Tests ====================
+    // Pricing calculation tests
     @Test
     public void testPricingBicycleCompact() {
-        // TC-31: BICYCLE (0.2) on COMPACT (0.8): 2 * 10 * 0.2 * 0.8 = 3.2
         Vehicle bicycle = new Vehicle(7, VehicleType.BICYCLE, 100.0);
         parkingSystem.addVehicle(bicycle);
         
@@ -466,40 +395,34 @@ public class ParkingSystemTest {
 
     @Test
     public void testPricingMotorcycleRegular() {
-        // TC-32: MOTORCYCLE (0.5) on REGULAR (1.0): 2 * 10 * 0.5 * 1.0 = 10.0
         Booking booking = parkingSystem.book(motorcycle, regularSlot, startTime, endTime);
         assertEquals(10.0, booking.getAmount(), 0.01, "Correct pricing");
     }
 
     @Test
     public void testPricingCarLarge() {
-        // TC-33: CAR (1.0) on LARGE (1.5): 2 * 10 * 1.0 * 1.5 = 30.0
         Booking booking = parkingSystem.book(car, largeSlot, startTime, endTime);
         assertEquals(30.0, booking.getAmount(), 0.01, "Correct pricing");
     }
 
     @Test
     public void testPricingBusLarge() {
-        // TC-34: BUS (2.0) on LARGE (1.5): 2 * 10 * 2.0 * 1.5 = 60.0
         Booking booking = parkingSystem.book(bus, largeSlot, startTime, endTime);
         assertEquals(60.0, booking.getAmount(), 0.01, "Correct pricing");
     }
 
     @Test
     public void testPricingWithFractionalHours() {
-        // TC-35: Verify fractional hours are truncated
         LocalDateTime start = LocalDateTime.of(2024, 6, 1, 10, 0);
-        LocalDateTime end = LocalDateTime.of(2024, 6, 1, 11, 30); // 1.5 hours -> truncated to 1
+        LocalDateTime end = LocalDateTime.of(2024, 6, 1, 11, 30); 
         
         Booking booking = parkingSystem.book(car, regularSlot, start, end);
-        // Should be: 1 * 10 * 1.0 * 1.0 = 10.0
         assertEquals(10.0, booking.getAmount(), 0.01, "Fractional hours truncated to 1");
     }
 
-    // ==================== Booking Storage Tests ====================
+    // Booking storage tests
     @Test
     public void testBookingStoredInSystem() {
-        // TC-36: Verify booking is stored in system
         Booking booking = parkingSystem.book(car, regularSlot, startTime, endTime);
         
         assertTrue(parkingSystem.getBookings().contains(booking), "Booking should be in system");
@@ -507,7 +430,6 @@ public class ParkingSystemTest {
 
     @Test
     public void testBookingStoredInSlot() {
-        // TC-37: Verify booking is stored in slot
         Booking booking = parkingSystem.book(car, regularSlot, startTime, endTime);
         
         assertTrue(regularSlot.getBookings().contains(booking), "Booking should be in slot");
@@ -515,7 +437,6 @@ public class ParkingSystemTest {
 
     @Test
     public void testMultipleBookingsStorage() {
-        // TC-38: Verify multiple bookings stored independently
         Booking booking1 = parkingSystem.book(car, regularSlot, startTime, endTime);
         
         LocalDateTime start2 = LocalDateTime.of(2024, 6, 2, 10, 0);
@@ -526,10 +447,9 @@ public class ParkingSystemTest {
         assertEquals(2, parkingSystem.getBookings().size(), "Both bookings in system");
     }
 
-    // ==================== Edge Cases ====================
+    // Different scenarios
     @Test
     public void testParkingRateConfiguration() {
-        // TC-39: Verify parking rate can be retrieved and set
         double originalRate = parkingSystem.getPARKING_RATE_PER_HOUR();
         assertEquals(10.0, originalRate, "Default rate should be 10.0");
         

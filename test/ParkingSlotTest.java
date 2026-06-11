@@ -5,26 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit Tests for ParkingSlot class
- * 
- * Test Scaffolding:
- * - @BeforeEach (setUp): Initializes test fixtures before each test
- * - @AfterEach (tearDown): Cleans up resources after each test
- * 
- * Each test follows the AAA pattern:
- * - Arrange: Set up test data and preconditions
- * - Act: Execute the method being tested
- * - Assert: Verify the results and object state
- * 
- * Mock objects and stubs: LocalDateTime objects simulate time windows
- * 
- * Testing focus:
- * - Compatibility matrix validation (all vehicle/slot type combinations)
- * - State transitions (activate/deactivate)
- * - Availability logic with time window overlaps
- * - Boundary conditions and edge cases
- */
+
 public class ParkingSlotTest {
     private ParkingSlot slot;
     private LocalDateTime startTime;
@@ -44,16 +25,12 @@ public class ParkingSlotTest {
         endTime = null;
     }
 
-    // ==================== CONSTRUCTOR & INITIALIZATION TESTS ====================
-    // Testing: ParkingSlot creation and initial state
+    // Constructor tests
 
     @Test
     public void testParkingSlotConstructor() {
-        // ARRANGE: Constructor parameters ready
-        // ACT: Create parking slot
         ParkingSlot newSlot = new ParkingSlot("S100", ParkingSlotType.COMPACT);
         
-        // ASSERT: Verify all fields initialized correctly
         assertEquals("S100", newSlot.getSlotId(), "Slot ID should match");
         assertEquals(ParkingSlotType.COMPACT, newSlot.getSlotType(), "Slot type should match");
         assertTrue(newSlot.isActive(), "Slot should be active by default");
@@ -61,47 +38,40 @@ public class ParkingSlotTest {
         assertEquals(0, newSlot.getBookings().size(), "Slot should have no initial bookings");
     }
 
-    // ==================== Getter Tests ====================
+    // Getter test
     @Test
     public void testGetSlotId() {
-        // TC-02: Verify getSlotId returns correct ID
         assertEquals("S001", slot.getSlotId(), "getSlotId should return correct ID");
     }
 
     @Test
     public void testGetSlotType() {
-        // TC-03: Verify getSlotType returns correct type
         assertEquals(ParkingSlotType.REGULAR, slot.getSlotType(), "getSlotType should return correct type");
     }
 
     @Test
     public void testGetWallet() {
-        // TC-04: Verify getWallet returns wallet object
         assertNotNull(slot.getWallet(), "getWallet should return non-null wallet");
     }
 
     @Test
     public void testGetBookings() {
-        // TC-05: Verify getBookings returns empty list initially
         assertEquals(0, slot.getBookings().size(), "Bookings list should be empty initially");
     }
 
     @Test
     public void testGetBalance() {
-        // TC-06: Verify getBalance returns wallet balance
         assertEquals(0.0, slot.getBalance(), "Balance should be 0 initially");
     }
 
     @Test
     public void testIsActive() {
-        // TC-07: Verify isActive returns true by default
         assertTrue(slot.isActive(), "Slot should be active by default");
     }
 
-    // ==================== Activate/Deactivate Tests ====================
+    // Activate/Deactivate tests
     @Test
     public void testActivateSlot() {
-        // TC-08: Verify activating a slot
         slot.deactivate();
         assertFalse(slot.isActive(), "Slot should be inactive after deactivation");
         
@@ -111,7 +81,6 @@ public class ParkingSlotTest {
 
     @Test
     public void testDeactivateSlot() {
-        // TC-09: Verify deactivating a slot
         assertTrue(slot.isActive(), "Slot should be active initially");
         slot.deactivate();
         assertFalse(slot.isActive(), "Slot should be inactive after deactivation");
@@ -119,7 +88,6 @@ public class ParkingSlotTest {
 
     @Test
     public void testMultipleActivationDeactivations() {
-        // TC-10: Verify multiple activation/deactivation cycles
         slot.deactivate();
         slot.activate();
         slot.deactivate();
@@ -129,10 +97,9 @@ public class ParkingSlotTest {
         assertTrue(slot.isActive(), "Slot should be active after final activation");
     }
 
-    // ==================== Compatibility Tests ====================
+    // Compatibility tests
     @Test
     public void testCompatibilityMotorcycleCompactSlot() {
-        // TC-11: Verify MOTORCYCLE is compatible with COMPACT slot (when available)
         ParkingSlot compactSlot = new ParkingSlot("S002", ParkingSlotType.COMPACT);
         assertTrue(compactSlot.isCompatible(VehicleType.MOTORCYCLE, startTime, endTime),
                 "MOTORCYCLE should be compatible with COMPACT slot");
@@ -140,14 +107,12 @@ public class ParkingSlotTest {
 
     @Test
     public void testCompatibilityMotorcycleRegularSlot() {
-        // TC-12: Verify MOTORCYCLE is compatible with REGULAR slot
         assertTrue(slot.isCompatible(VehicleType.MOTORCYCLE, startTime, endTime),
                 "MOTORCYCLE should be compatible with REGULAR slot");
     }
 
     @Test
     public void testCompatibilityMotorcycleLargeSlot() {
-        // TC-13: Verify MOTORCYCLE is compatible with LARGE slot
         ParkingSlot largeSlot = new ParkingSlot("S003", ParkingSlotType.LARGE);
         assertTrue(largeSlot.isCompatible(VehicleType.MOTORCYCLE, startTime, endTime),
                 "MOTORCYCLE should be compatible with LARGE slot");
@@ -155,14 +120,12 @@ public class ParkingSlotTest {
 
     @Test
     public void testCompatibilityCarRegularSlot() {
-        // TC-14: Verify CAR is compatible with REGULAR slot
         assertTrue(slot.isCompatible(VehicleType.CAR, startTime, endTime),
                 "CAR should be compatible with REGULAR slot");
     }
 
     @Test
     public void testCompatibilityCarLargeSlot() {
-        // TC-15: Verify CAR is compatible with LARGE slot
         ParkingSlot largeSlot = new ParkingSlot("S004", ParkingSlotType.LARGE);
         assertTrue(largeSlot.isCompatible(VehicleType.CAR, startTime, endTime),
                 "CAR should be compatible with LARGE slot");
@@ -170,7 +133,6 @@ public class ParkingSlotTest {
 
     @Test
     public void testCompatibilityCarCompactSlot() {
-        // TC-16: Verify CAR is NOT compatible with COMPACT slot
         ParkingSlot compactSlot = new ParkingSlot("S005", ParkingSlotType.COMPACT);
         assertFalse(compactSlot.isCompatible(VehicleType.CAR, startTime, endTime),
                 "CAR should NOT be compatible with COMPACT slot");
@@ -178,7 +140,6 @@ public class ParkingSlotTest {
 
     @Test
     public void testCompatibilityBusLargeSlot() {
-        // TC-17: Verify BUS is compatible with LARGE slot
         ParkingSlot largeSlot = new ParkingSlot("S006", ParkingSlotType.LARGE);
         assertTrue(largeSlot.isCompatible(VehicleType.BUS, startTime, endTime),
                 "BUS should be compatible with LARGE slot");
@@ -186,7 +147,6 @@ public class ParkingSlotTest {
 
     @Test
     public void testCompatibilityBusCompactSlot() {
-        // TC-18: Verify BUS is NOT compatible with COMPACT slot
         ParkingSlot compactSlot = new ParkingSlot("S007", ParkingSlotType.COMPACT);
         assertFalse(compactSlot.isCompatible(VehicleType.BUS, startTime, endTime),
                 "BUS should NOT be compatible with COMPACT slot");
@@ -194,7 +154,6 @@ public class ParkingSlotTest {
 
     @Test
     public void testCompatibilityBicycleAllSlots() {
-        // TC-19: Verify BICYCLE is compatible with all slot types
         for (ParkingSlotType type : ParkingSlotType.values()) {
             ParkingSlot testSlot = new ParkingSlot("S008", type);
             assertTrue(testSlot.isCompatible(VehicleType.BICYCLE, startTime, endTime),
@@ -204,7 +163,6 @@ public class ParkingSlotTest {
 
     @Test
     public void testCompatibilityMicrocarCompactSlot() {
-        // TC-20: Verify MICROCAR is compatible with COMPACT slot
         ParkingSlot compactSlot = new ParkingSlot("S009", ParkingSlotType.COMPACT);
         assertTrue(compactSlot.isCompatible(VehicleType.MICROCAR, startTime, endTime),
                 "MICROCAR should be compatible with COMPACT slot");
@@ -212,14 +170,12 @@ public class ParkingSlotTest {
 
     @Test
     public void testCompatibilityMicrocarRegularSlot() {
-        // TC-21: Verify MICROCAR is compatible with REGULAR slot
         assertTrue(slot.isCompatible(VehicleType.MICROCAR, startTime, endTime),
                 "MICROCAR should be compatible with REGULAR slot");
     }
 
     @Test
     public void testCompatibilityMicrocarLargeSlot() {
-        // TC-22: Verify MICROCAR is NOT compatible with LARGE slot (DEFECT FOUND)
         ParkingSlot largeSlot = new ParkingSlot("S010", ParkingSlotType.LARGE);
         assertFalse(largeSlot.isCompatible(VehicleType.MICROCAR, startTime, endTime),
                 "MICROCAR should NOT be compatible with LARGE slot");
@@ -227,7 +183,6 @@ public class ParkingSlotTest {
 
     @Test
     public void testCompatibilityTruckNoSlot() {
-        // TC-23: Verify TRUCK is not compatible with any slot (not in compatibility matrix)
         for (ParkingSlotType type : ParkingSlotType.values()) {
             ParkingSlot testSlot = new ParkingSlot("S011", type);
             assertFalse(testSlot.isCompatible(VehicleType.TRUCK, startTime, endTime),
@@ -237,23 +192,20 @@ public class ParkingSlotTest {
 
     @Test
     public void testCompatibilityInactiveSlot() {
-        // TC-24: Verify inactive slot is not compatible with any vehicle
         slot.deactivate();
         assertFalse(slot.isCompatible(VehicleType.CAR, startTime, endTime),
                 "Inactive slot should not be compatible");
     }
 
-    // ==================== Availability Tests ====================
+    // Availability tests
     @Test
     public void testAvailabilityEmptySlot() {
-        // TC-25: Verify empty slot is available
         assertTrue(slot.isAvailable(startTime, endTime),
                 "Empty slot should be available");
     }
 
     @Test
     public void testAvailabilityOverlappingBooking() {
-        // TC-26: Verify overlapping booking makes slot unavailable
         Booking booking = new Booking(1, new Vehicle(1, VehicleType.CAR, 1000), slot, startTime, endTime, 100);
         slot.getBookings().add(booking);
         
@@ -266,7 +218,6 @@ public class ParkingSlotTest {
 
     @Test
     public void testAvailabilityNonOverlappingBookingBefore() {
-        // TC-27: Verify booking ending exactly when new booking starts allows booking
         Booking booking = new Booking(2, new Vehicle(2, VehicleType.CAR, 1000), slot, startTime, endTime, 100);
         slot.getBookings().add(booking);
         
@@ -279,7 +230,6 @@ public class ParkingSlotTest {
 
     @Test
     public void testAvailabilityNonOverlappingBookingAfter() {
-        // TC-28: Verify booking starting exactly when new booking ends allows booking
         LocalDateTime laterStart = LocalDateTime.of(2024, 6, 1, 14, 0);
         LocalDateTime laterEnd = LocalDateTime.of(2024, 6, 1, 16, 0);
         
@@ -292,7 +242,6 @@ public class ParkingSlotTest {
 
     @Test
     public void testAvailabilityMultipleBookings() {
-        // TC-29: Verify multiple non-overlapping bookings
         Booking booking1 = new Booking(4, new Vehicle(4, VehicleType.CAR, 1000), slot, 
                 LocalDateTime.of(2024, 6, 1, 10, 0), LocalDateTime.of(2024, 6, 1, 12, 0), 100);
         Booking booking2 = new Booking(5, new Vehicle(5, VehicleType.CAR, 1000), slot, 
@@ -310,7 +259,6 @@ public class ParkingSlotTest {
 
     @Test
     public void testAvailabilityPartialOverlapStart() {
-        // TC-30: Verify request starting before existing booking overlaps
         Booking booking = new Booking(6, new Vehicle(6, VehicleType.CAR, 1000), slot, startTime, endTime, 100);
         slot.getBookings().add(booking);
         
@@ -323,7 +271,6 @@ public class ParkingSlotTest {
 
     @Test
     public void testAvailabilityPartialOverlapEnd() {
-        // TC-31: Verify request ending after existing booking overlaps
         Booking booking = new Booking(7, new Vehicle(7, VehicleType.CAR, 1000), slot, startTime, endTime, 100);
         slot.getBookings().add(booking);
         
@@ -334,27 +281,24 @@ public class ParkingSlotTest {
                 "Overlapping end should make slot unavailable");
     }
 
-    // ==================== Wallet Operations Tests ====================
+    // Wallet operations tests
     @Test
     public void testSlotWalletReceiveFunds() {
-        // TC-32: Verify slot wallet can receive funds
         slot.getWallet().addFunds(100.0);
         assertEquals(100.0, slot.getBalance(), "Slot wallet should receive funds");
     }
 
     @Test
     public void testSlotWalletMultipleTransactions() {
-        // TC-33: Verify slot wallet handles multiple transactions
         Wallet transferWallet = new Wallet(500.0);
         transferWallet.transferFunds(slot.getWallet(), 200.0);
         
         assertEquals(200.0, slot.getBalance(), "Slot should receive transferred funds");
     }
 
-    // ==================== Edge Cases ====================
+    // Different scenarios for slot types
     @Test
     public void testParkingSlotWithAllTypes() {
-        // TC-34: Verify slots can be created with all types
         for (ParkingSlotType type : ParkingSlotType.values()) {
             ParkingSlot testSlot = new ParkingSlot("S_" + type, type);
             assertEquals(type, testSlot.getSlotType(), "Slot type should be " + type);
@@ -363,7 +307,6 @@ public class ParkingSlotTest {
 
     @Test
     public void testParkingSlotIdWithSpecialCharacters() {
-        // TC-35: Verify slot ID with various characters
         ParkingSlot testSlot = new ParkingSlot("S-A1_#123", ParkingSlotType.REGULAR);
         assertEquals("S-A1_#123", testSlot.getSlotId(), "Slot should accept special characters in ID");
     }

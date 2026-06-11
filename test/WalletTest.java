@@ -3,23 +3,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit Tests for Wallet class
- * 
- * Test Scaffolding:
- * - @BeforeEach (setUp): Initializes test fixtures before each test
- * - @AfterEach (tearDown): Cleans up resources after each test
- * 
- * Each test follows the AAA pattern:
- * - Arrange: Set up test data and preconditions
- * - Act: Execute the method being tested
- * - Assert: Verify the results and object state
- * 
- * Tests cover:
- * - Normal paths: valid inputs with expected outputs
- * - Error/Exception paths: invalid inputs that should throw exceptions
- * - Boundary conditions: zero, negative, large values
- */
 public class WalletTest {
     private Wallet wallet;
     private Wallet targetWallet;
@@ -36,45 +19,37 @@ public class WalletTest {
         targetWallet = null;
     }
 
-    // ==================== CONSTRUCTOR TESTS ====================
-    // Testing unit: Wallet initialization with various input conditions
+    // Constructor Tests
 
     @Test
     public void testWalletDefaultConstructor() {
-        // ARRANGE: Constructor is implicitly called
-        // ACT: Create wallet with default constructor
         Wallet newWallet = new Wallet();
         
-        // ASSERT: Verify initialization
         assertEquals(0.0, newWallet.getBalance(), "Default wallet should have 0 balance");
     }
 
     @Test
     public void testWalletConstructorWithInitialBalance() {
-        // TC-02: Verify constructor with positive initial balance
         Wallet newWallet = new Wallet(100.5);
         assertEquals(100.5, newWallet.getBalance(), "Wallet should initialize with given balance");
     }
 
     @Test
     public void testWalletConstructorWithNegativeBalance() {
-        // TC-03: Verify constructor accepts negative balance (no validation)
         Wallet newWallet = new Wallet(-50.0);
         assertEquals(-50.0, newWallet.getBalance(), "Constructor allows negative balance without validation");
     }
 
-    // ==================== getBalance Tests ====================
+    // getBalance Tests
     @Test
     public void testGetBalanceAfterCreation() {
-        // TC-04: Verify getBalance returns correct initial balance
         wallet = new Wallet(250.75);
         assertEquals(250.75, wallet.getBalance(), "getBalance should return initial balance");
     }
 
-    // ==================== addFunds Tests ====================
+    // AddFunds Tests
     @Test
     public void testAddFundsPositiveAmount() {
-        // TC-05: Verify adding positive amount increases balance
         wallet = new Wallet(100.0);
         wallet.addFunds(50.0);
         assertEquals(150.0, wallet.getBalance(), "Balance should increase by added amount");
@@ -82,7 +57,6 @@ public class WalletTest {
 
     @Test
     public void testAddFundsMultipleOperations() {
-        // TC-06: Verify multiple addFunds operations accumulate correctly
         wallet = new Wallet(100.0);
         wallet.addFunds(25.0);
         wallet.addFunds(75.0);
@@ -91,7 +65,6 @@ public class WalletTest {
 
     @Test
     public void testAddFundsSmallAmount() {
-        // TC-07: Verify adding very small positive amount
         wallet = new Wallet(100.0);
         wallet.addFunds(0.01);
         assertEquals(100.01, wallet.getBalance(), "Should handle small decimal amounts");
@@ -99,7 +72,6 @@ public class WalletTest {
 
     @Test
     public void testAddFundsZeroAmount() {
-        // TC-08: Verify adding zero throws InvalidAmountException
         wallet = new Wallet(100.0);
         assertThrows(InvalidAmountException.class, () -> wallet.addFunds(0.0),
                 "Adding zero amount should throw InvalidAmountException");
@@ -107,16 +79,14 @@ public class WalletTest {
 
     @Test
     public void testAddFundsNegativeAmount() {
-        // TC-09: Verify adding negative amount throws InvalidAmountException
         wallet = new Wallet(100.0);
         assertThrows(InvalidAmountException.class, () -> wallet.addFunds(-50.0),
                 "Adding negative amount should throw InvalidAmountException");
     }
 
-    // ==================== deductFunds Tests ====================
+    // deductFunds Tests
     @Test
     public void testDeductFundsValidAmount() {
-        // TC-10: Verify deducting valid amount decreases balance
         wallet = new Wallet(100.0);
         wallet.deductFunds(30.0);
         assertEquals(70.0, wallet.getBalance(), "Balance should decrease by deducted amount");
@@ -124,7 +94,6 @@ public class WalletTest {
 
     @Test
     public void testDeductFundsCompleteBalance() {
-        // TC-11: Verify deducting exact balance leaves 0
         wallet = new Wallet(100.0);
         wallet.deductFunds(100.0);
         assertEquals(0.0, wallet.getBalance(), "Deducting exact balance should result in 0");
@@ -132,7 +101,6 @@ public class WalletTest {
 
     @Test
     public void testDeductFundsMultipleOperations() {
-        // TC-12: Verify multiple deduct operations
         wallet = new Wallet(200.0);
         wallet.deductFunds(50.0);
         wallet.deductFunds(75.0);
@@ -141,7 +109,6 @@ public class WalletTest {
 
     @Test
     public void testDeductFundsMoreThanBalance() {
-        // TC-13: Verify deducting more than balance throws InsufficientFundsException
         wallet = new Wallet(50.0);
         assertThrows(InsufficientFundsException.class, () -> wallet.deductFunds(75.0),
                 "Deducting more than balance should throw InsufficientFundsException");
@@ -149,7 +116,6 @@ public class WalletTest {
 
     @Test
     public void testDeductFundsZeroAmount() {
-        // TC-14: Verify deducting zero throws InvalidAmountException
         wallet = new Wallet(100.0);
         assertThrows(InvalidAmountException.class, () -> wallet.deductFunds(0.0),
                 "Deducting zero amount should throw InvalidAmountException");
@@ -157,7 +123,6 @@ public class WalletTest {
 
     @Test
     public void testDeductFundsNegativeAmount() {
-        // TC-15: Verify deducting negative amount throws InvalidAmountException
         wallet = new Wallet(100.0);
         assertThrows(InvalidAmountException.class, () -> wallet.deductFunds(-50.0),
                 "Deducting negative amount should throw InvalidAmountException");
@@ -165,7 +130,6 @@ public class WalletTest {
 
     @Test
     public void testDeductFundsFromEmptyWallet() {
-        // TC-16: Verify deducting from empty wallet throws InsufficientFundsException
         wallet = new Wallet(0.0);
         assertThrows(InsufficientFundsException.class, () -> wallet.deductFunds(1.0),
                 "Deducting from empty wallet should throw InsufficientFundsException");
@@ -173,16 +137,14 @@ public class WalletTest {
 
     @Test
     public void testDeductFundsSmallAmount() {
-        // TC-17: Verify deducting small decimal amount
         wallet = new Wallet(100.0);
         wallet.deductFunds(0.01);
         assertEquals(99.99, wallet.getBalance(), "Should handle small decimal deductions");
     }
 
-    // ==================== transferFunds Tests ====================
+    // transferFunds Tests
     @Test
     public void testTransferFundsValidAmount() {
-        // TC-18: Verify transferring valid amount between wallets
         wallet = new Wallet(100.0);
         targetWallet = new Wallet(50.0);
         wallet.transferFunds(targetWallet, 30.0);
@@ -193,7 +155,6 @@ public class WalletTest {
 
     @Test
     public void testTransferFundsCompleteBalance() {
-        // TC-19: Verify transferring entire balance
         wallet = new Wallet(100.0);
         targetWallet = new Wallet(0.0);
         wallet.transferFunds(targetWallet, 100.0);
@@ -204,7 +165,6 @@ public class WalletTest {
 
     @Test
     public void testTransferFundsMoreThanBalance() {
-        // TC-20: Verify transferring more than balance throws InsufficientFundsException
         wallet = new Wallet(50.0);
         targetWallet = new Wallet(100.0);
         assertThrows(InsufficientFundsException.class, () -> wallet.transferFunds(targetWallet, 75.0),
@@ -213,7 +173,6 @@ public class WalletTest {
 
     @Test
     public void testTransferFundsZeroAmount() {
-        // TC-21: Verify transferring zero throws InvalidAmountException
         wallet = new Wallet(100.0);
         targetWallet = new Wallet(50.0);
         assertThrows(InvalidAmountException.class, () -> wallet.transferFunds(targetWallet, 0.0),
@@ -222,7 +181,6 @@ public class WalletTest {
 
     @Test
     public void testTransferFundsNegativeAmount() {
-        // TC-22: Verify transferring negative amount throws InvalidAmountException
         wallet = new Wallet(100.0);
         targetWallet = new Wallet(50.0);
         assertThrows(InvalidAmountException.class, () -> wallet.transferFunds(targetWallet, -30.0),
@@ -231,7 +189,6 @@ public class WalletTest {
 
     @Test
     public void testTransferFundsFromEmptyWallet() {
-        // TC-23: Verify transferring from empty wallet throws InsufficientFundsException
         wallet = new Wallet(0.0);
         targetWallet = new Wallet(100.0);
         assertThrows(InsufficientFundsException.class, () -> wallet.transferFunds(targetWallet, 1.0),
@@ -240,7 +197,6 @@ public class WalletTest {
 
     @Test
     public void testTransferFundsMultipleTransfers() {
-        // TC-24: Verify multiple consecutive transfers
         wallet = new Wallet(300.0);
         Wallet wallet2 = new Wallet(100.0);
         Wallet wallet3 = new Wallet(50.0);
@@ -255,16 +211,13 @@ public class WalletTest {
 
     @Test
     public void testTransferFundsToSameWallet() {
-        // TC-25: Verify transferring to same wallet (edge case)
         wallet = new Wallet(100.0);
-        // This should work but result in funds being deducted then added back
         wallet.transferFunds(wallet, 50.0);
         assertEquals(100.0, wallet.getBalance(), "Transfer to same wallet should maintain balance");
     }
 
     @Test
     public void testTransferFundsSmallAmount() {
-        // TC-26: Verify transferring small decimal amount
         wallet = new Wallet(100.0);
         targetWallet = new Wallet(0.0);
         wallet.transferFunds(targetWallet, 0.01);
