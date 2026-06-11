@@ -98,154 +98,154 @@ Validate → Compile → Test → Package → Deploy
 
 | Test ID | Class.Method Under Test | Why this test? | Verdict | Comments/Observations |
 | --- | --- | --- | --- | --- |
-| **TC-01** | `Wallet.Wallet()` | Verify default constructor initializes balance to 0. | **PASS** | Default wallet correctly has 0 balance. |
-| **TC-02** | `Wallet.Wallet(double)` | Verify constructor with positive initial balance sets correctly. | **PASS** | Constructor correctly sets provided balance. |
-| **TC-03** | `Wallet.Wallet(double)` | Verify constructor accepts negative balance without validation. | **PASS** | Constructor allows negative balance (no validation). |
-| **TC-04** | `Wallet.getBalance()` | Verify getBalance returns correct initial balance. | **PASS** | Returns correct initial balance value. |
-| **TC-05** | `Wallet.addFunds(double)` | Verify adding positive amount increases balance. | **PASS** | Balance correctly increased by added amount. |
-| **TC-06** | `Wallet.addFunds(double)` | Verify multiple addFunds operations accumulate correctly. | **PASS** | Multiple additions correctly accumulate. |
-| **TC-07** | `Wallet.addFunds(double)` | Verify adding very small positive amount works. | **PASS** | Handles small decimal amounts precisely. |
-| **TC-08** | `Wallet.addFunds(double)` | Verify adding zero throws InvalidAmountException. | **PASS** | Correctly throws InvalidAmountException. |
-| **TC-09** | `Wallet.addFunds(double)` | Verify adding negative amount throws InvalidAmountException. | **PASS** | Correctly throws InvalidAmountException. |
-| **TC-10** | `Wallet.deductFunds(double)` | Verify deducting valid amount decreases balance. | **PASS** | Balance correctly decreased by deducted amount. |
-| **TC-11** | `Wallet.deductFunds(double)` | Verify deducting exact balance leaves 0. | **PASS** | Balance correctly becomes 0. |
-| **TC-12** | `Wallet.deductFunds(double)` | Verify multiple deduct operations work correctly. | **PASS** | Multiple deductions correctly applied. |
-| **TC-13** | `Wallet.deductFunds(double)` | Verify deducting more than balance throws InsufficientFundsException. | **PASS** | Correctly throws InsufficientFundsException. |
-| **TC-14** | `Wallet.deductFunds(double)` | Verify deducting zero throws InvalidAmountException. | **PASS** | Correctly throws InvalidAmountException. |
-| **TC-15** | `Wallet.deductFunds(double)` | Verify deducting negative amount throws InvalidAmountException. | **PASS** | Correctly throws InvalidAmountException. |
-| **TC-16** | `Wallet.deductFunds(double)` | Verify deducting from empty wallet throws InsufficientFundsException. | **PASS** | Correctly throws InsufficientFundsException. |
-| **TC-17** | `Wallet.deductFunds(double)` | Verify deducting small decimal amount works. | **PASS** | Handles small decimal deductions. |
-| **TC-18** | `Wallet.transferFunds(Wallet, double)` | Verify transferring valid amount between wallets. | **PASS** | Both wallets correctly updated. |
-| **TC-19** | `Wallet.transferFunds(Wallet, double)` | Verify transferring entire balance works. | **PASS** | Source empties, target receives full amount. |
-| **TC-20** | `Wallet.transferFunds(Wallet, double)` | Verify transferring more than balance throws exception. | **PASS** | Correctly throws InsufficientFundsException. |
-| **TC-21** | `Wallet.transferFunds(Wallet, double)` | Verify transferring zero throws InvalidAmountException. | **PASS** | Correctly throws InvalidAmountException. |
-| **TC-22** | `Wallet.transferFunds(Wallet, double)` | Verify transferring negative amount throws InvalidAmountException. | **PASS** | Correctly throws InvalidAmountException. |
-| **TC-23** | `Wallet.transferFunds(Wallet, double)` | Verify transferring from empty wallet throws exception. | **PASS** | Correctly throws InsufficientFundsException. |
-| **TC-24** | `Wallet.transferFunds(Wallet, double)` | Verify multiple consecutive transfers work correctly. | **PASS** | All transfers applied correctly. |
-| **TC-25** | `Wallet.transferFunds(Wallet, double)` | Verify transferring to same wallet (edge case). | **PASS** | Balance maintained after self-transfer. |
-| **TC-26** | `Wallet.transferFunds(Wallet, double)` | Verify transferring small decimal amount works. | **PASS** | Precision maintained for small amounts. |
-| **TC-01** | `Vehicle.Vehicle(int, VehicleType, Wallet)` | Verify Vehicle constructor with Wallet parameter. | **PASS** | Vehicle correctly initialized with provided wallet. |
-| **TC-02** | `Vehicle.Vehicle(int, VehicleType, double)` | Verify Vehicle constructor with initial balance parameter. | **PASS** | New wallet created with correct balance. |
-| **TC-03** | `Vehicle.Vehicle(int, VehicleType, double)` | Verify Vehicle can be created with zero balance. | **PASS** | Vehicle correctly created with 0 balance. |
-| **TC-04** | `Vehicle.Vehicle(...)` | Verify Vehicle can be created with all VehicleTypes. | **PASS** | All vehicle types correctly supported. |
-| **TC-05** | `Vehicle.getVehicleId()` | Verify getVehicleId returns correct ID. | **PASS** | Returns correct vehicle ID. |
-| **TC-06** | `Vehicle.getVehicleType()` | Verify getVehicleType returns correct type. | **PASS** | Returns correct vehicle type. |
-| **TC-07** | `Vehicle.getWallet()` | Verify getWallet returns the wallet object. | **PASS** | Returns same wallet object reference. |
-| **TC-08** | `Vehicle.getBalance()` | Verify getBalance returns correct wallet balance. | **PASS** | Returns wallet balance correctly. |
-| **TC-09** | `Vehicle.getBalance()` | Verify getBalance reflects wallet changes. | **PASS** | Reflects changes to underlying wallet. |
-| **TC-10** | `Vehicle.getWallet().addFunds()` | Verify vehicle wallet can receive funds. | **PASS** | Funds correctly added to vehicle wallet. |
-| **TC-11** | `Vehicle.getWallet().deductFunds()` | Verify vehicle wallet can lose funds. | **PASS** | Funds correctly deducted from vehicle wallet. |
-| **TC-12** | `Vehicle.getWallet().deductFunds()` | Verify deducting more than balance fails. | **PASS** | Correctly throws InsufficientFundsException. |
-| **TC-13** | `Vehicle.getWallet().transferFunds()` | Verify vehicle can transfer funds to another wallet. | **PASS** | Transfer correctly executed. |
-| **TC-14** | `Vehicle` | Verify two vehicles with same ID but different wallets are different. | **PASS** | Different object instances despite same ID. |
-| **TC-15** | `Vehicle` | Verify multiple vehicles have independent wallets. | **PASS** | Changes to one don't affect others. |
-| **TC-16** | `Vehicle.toString()` | Verify toString includes vehicle information. | **PASS** | Contains ID, type, and balance. |
-| **TC-17** | `Vehicle` | Verify vehicle can be created with negative balance. | **PASS** | Constructor allows negative balance. |
-| **TC-18** | `Vehicle` | Verify vehicle handles large balance amounts. | **PASS** | Correctly handles large numbers. |
-| **TC-19** | `Vehicle` | Verify vehicle handles various ID ranges. | **PASS** | Accepts positive, negative, and large IDs. |
-| **TC-20** | `Vehicle` | Verify multiple vehicles can reference same wallet. | **PASS** | Shared wallet affects all vehicles. |
-| **TC-01** | `ParkingSlot.ParkingSlot(String, ParkingSlotType)` | Verify ParkingSlot constructor initializes correctly. | **PASS** | All fields initialized with correct values. |
-| **TC-02** | `ParkingSlot.getSlotId()` | Verify getSlotId returns correct ID. | **PASS** | Returns correct slot ID. |
-| **TC-03** | `ParkingSlot.getSlotType()` | Verify getSlotType returns correct type. | **PASS** | Returns correct slot type. |
-| **TC-04** | `ParkingSlot.getWallet()` | Verify getWallet returns wallet object. | **PASS** | Returns non-null wallet. |
-| **TC-05** | `ParkingSlot.getBookings()` | Verify getBookings returns empty list initially. | **PASS** | Empty list initially. |
-| **TC-06** | `ParkingSlot.getBalance()` | Verify getBalance returns wallet balance. | **PASS** | Returns 0 initially. |
-| **TC-07** | `ParkingSlot.isActive()` | Verify isActive returns true by default. | **PASS** | Slot active by default. |
-| **TC-08** | `ParkingSlot.activate()` | Verify activating a deactivated slot. | **PASS** | Slot becomes active. |
-| **TC-09** | `ParkingSlot.deactivate()` | Verify deactivating a slot. | **PASS** | Slot becomes inactive. |
-| **TC-10** | `ParkingSlot.activate/deactivate()` | Verify multiple activation/deactivation cycles. | **PASS** | Status correctly toggled multiple times. |
-| **TC-11** | `ParkingSlot.isCompatible(MOTORCYCLE, ...)` | Verify MOTORCYCLE compatible with COMPACT. | **PASS** | Correctly compatible. |
-| **TC-12** | `ParkingSlot.isCompatible(MOTORCYCLE, ...)` | Verify MOTORCYCLE compatible with REGULAR. | **PASS** | Correctly compatible. |
-| **TC-13** | `ParkingSlot.isCompatible(MOTORCYCLE, ...)` | Verify MOTORCYCLE compatible with LARGE. | **PASS** | Correctly compatible. |
-| **TC-14** | `ParkingSlot.isCompatible(CAR, ...)` | Verify CAR compatible with REGULAR. | **PASS** | Correctly compatible. |
-| **TC-15** | `ParkingSlot.isCompatible(CAR, ...)` | Verify CAR compatible with LARGE. | **PASS** | Correctly compatible. |
-| **TC-16** | `ParkingSlot.isCompatible(CAR, ...)` | Verify CAR NOT compatible with COMPACT. | **PASS** | Correctly rejects COMPACT. |
-| **TC-17** | `ParkingSlot.isCompatible(BUS, ...)` | Verify BUS compatible with LARGE. | **PASS** | Correctly compatible. |
-| **TC-18** | `ParkingSlot.isCompatible(BUS, ...)` | Verify BUS NOT compatible with COMPACT. | **PASS** | Correctly rejects COMPACT. |
-| **TC-19** | `ParkingSlot.isCompatible(BICYCLE, ...)` | Verify BICYCLE compatible with all slot types. | **PASS** | Compatible with all four types. |
-| **TC-20** | `ParkingSlot.isCompatible(MICROCAR, ...)` | Verify MICROCAR compatible with COMPACT. | **PASS** | Correctly compatible. |
-| **TC-21** | `ParkingSlot.isCompatible(MICROCAR, ...)` | Verify MICROCAR compatible with REGULAR. | **PASS** | Correctly compatible. |
-| **TC-22** | `ParkingSlot.isCompatible(MICROCAR, ...)` | Verify MICROCAR NOT compatible with LARGE. | **FAIL** | **DEFECT FOUND**: Falls through to default, returns false. Should allow MICROCAR on LARGE based on missing break statement. |
-| **TC-23** | `ParkingSlot.isCompatible(TRUCK, ...)` | Verify TRUCK not compatible with any slot. | **PASS** | TRUCK correctly has no compatible slots (as per doc). |
-| **TC-24** | `ParkingSlot.isCompatible(...)` | Verify inactive slot not compatible. | **PASS** | Inactive slot correctly returns false. |
-| **TC-25** | `ParkingSlot.isAvailable(...)` | Verify empty slot is available. | **PASS** | Empty slot correctly available. |
-| **TC-26** | `ParkingSlot.isAvailable(...)` | Verify overlapping booking makes slot unavailable. | **PASS** | Overlapping booking correctly blocks. |
-| **TC-27** | `ParkingSlot.isAvailable(...)` | Verify booking ending at request start allows slot. | **PASS** | No overlap when end equals start. |
-| **TC-28** | `ParkingSlot.isAvailable(...)` | Verify booking starting at request end allows slot. | **PASS** | No overlap when start equals end. |
-| **TC-29** | `ParkingSlot.isAvailable(...)` | Verify multiple non-overlapping bookings. | **PASS** | Gap between bookings correctly available. |
-| **TC-30** | `ParkingSlot.isAvailable(...)` | Verify partial overlap at start blocks. | **PASS** | Correctly identifies overlap. |
-| **TC-31** | `ParkingSlot.isAvailable(...)` | Verify partial overlap at end blocks. | **PASS** | Correctly identifies overlap. |
-| **TC-32** | `ParkingSlot.getWallet().addFunds()` | Verify slot wallet can receive funds. | **PASS** | Funds correctly added. |
-| **TC-33** | `ParkingSlot.getWallet()` | Verify slot wallet handles transfers. | **PASS** | Transfers correctly applied. |
-| **TC-34** | `ParkingSlot` | Verify slots created with all types. | **PASS** | All slot types supported. |
-| **TC-35** | `ParkingSlot` | Verify slot ID with special characters. | **PASS** | Special characters accepted in ID. |
-| **TC-01** | `Booking.Booking(...)` | Verify Booking constructor initializes correctly. | **PASS** | All fields initialized correctly with ACTIVE status. |
-| **TC-02** | `Booking.Booking(...)` | Verify Booking with different vehicle types. | **PASS** | Different vehicle types supported. |
-| **TC-03** | `Booking.getBookingId()` | Verify getBookingId returns correct ID. | **PASS** | Returns correct ID. |
-| **TC-04** | `Booking.getVehicle()` | Verify getVehicle returns correct vehicle. | **PASS** | Returns correct vehicle. |
-| **TC-05** | `Booking.getParkingSlot()` | Verify getParkingSlot returns correct slot. | **PASS** | Returns correct slot. |
-| **TC-06** | `Booking.getStartTime()` | Verify getStartTime returns correct time. | **PASS** | Returns correct start time. |
-| **TC-07** | `Booking.getEndTime()` | Verify getEndTime returns correct time. | **PASS** | Returns correct end time. |
-| **TC-08** | `Booking.getAmount()` | Verify getAmount returns correct amount. | **PASS** | Returns correct amount. |
-| **TC-09** | `Booking.getBookingStatus()` | Verify getBookingStatus returns ACTIVE. | **PASS** | New booking has ACTIVE status. |
-| **TC-10** | `Booking.completeBooking()` | Verify completeBooking changes status to COMPLETED. | **PASS** | Status correctly changed. |
-| **TC-11** | `Booking.cancelBooking()` | Verify cancelBooking changes status to CANCELLED. | **PASS** | Status correctly changed. |
-| **TC-12** | `Booking.completeBooking()` | Verify calling complete multiple times. | **PASS** | Remains COMPLETED. |
-| **TC-13** | `Booking.cancelBooking()` | Verify calling cancel multiple times. | **PASS** | Remains CANCELLED. |
-| **TC-14** | `Booking.completeBooking/cancelBooking` | Verify completing after cancelling. | **PASS** | Status can be overwritten to COMPLETED. |
-| **TC-15** | `Booking.cancelBooking/completeBooking` | Verify cancelling after completing. | **PASS** | Status can be overwritten to CANCELLED. |
-| **TC-16** | `Booking` | Verify booking spanning consecutive hours. | **PASS** | Multiple hours correctly stored. |
-| **TC-17** | `Booking` | Verify booking with different minute values. | **PASS** | Minutes preserved in times. |
-| **TC-18** | `Booking` | Verify booking with seconds and nanoseconds. | **PASS** | Seconds and nanos preserved. |
-| **TC-19** | `Booking` | Verify booking spanning multiple days. | **PASS** | Multi-day bookings supported. |
-| **TC-20** | `Booking` | Verify booking with zero amount. | **PASS** | Accepts zero amount. |
-| **TC-21** | `Booking` | Verify booking with negative amount. | **PASS** | Constructor allows negative amount. |
-| **TC-22** | `Booking` | Verify booking with large amount. | **PASS** | Large amounts handled. |
-| **TC-23** | `Booking` | Verify booking with decimal amount. | **PASS** | Decimal precision maintained. |
-| **TC-24** | `Booking.toString()` | Verify toString includes booking info. | **PASS** | Contains ID and status. |
-| **TC-25** | `Booking` | Verify booking with minimum duration. | **PASS** | Very close times supported. |
-| **TC-26** | `Booking` | Verify booking uses correct vehicle reference. | **PASS** | Correct vehicle stored. |
-| **TC-27** | `Booking` | Verify booking uses correct slot reference. | **PASS** | Correct slot stored. |
-| **TC-28** | `Booking` | Verify bookings with various IDs. | **PASS** | Various ID ranges supported. |
-| **TC-01** | `ParkingSystem.getInstance()` | Verify ParkingSystem is a singleton. | **PASS** | Returns same instance. |
-| **TC-02** | `ParkingSystem.addVehicle(Vehicle)` | Verify adding vehicle to system. | **PASS** | Vehicle added to list. |
-| **TC-03** | `ParkingSystem.addVehicle(...)` | Verify adding multiple vehicles. | **PASS** | Multiple vehicles added correctly. |
-| **TC-04** | `ParkingSystem.addParkingSlot(...)` | Verify adding parking slot to system. | **PASS** | Slot added to list. |
-| **TC-05** | `ParkingSystem.addParkingSlot(...)` | Verify adding multiple parking slots. | **PASS** | Multiple slots added correctly. |
-| **TC-06** | `ParkingSystem.getAvailableParkingSlots(CAR, ...)` | Verify getting available slots for CAR. | **PASS** | Returns REGULAR and LARGE only. |
-| **TC-07** | `ParkingSystem.getAvailableParkingSlots(MOTORCYCLE, ...)` | Verify getting available slots for MOTORCYCLE. | **PASS** | Returns all three types. |
-| **TC-08** | `ParkingSystem.getAvailableParkingSlots(BUS, ...)` | Verify getting available slots for BUS. | **PASS** | Returns only LARGE. |
-| **TC-09** | `ParkingSystem.getAvailableParkingSlots(BICYCLE, ...)` | Verify getting available slots for BICYCLE. | **PASS** | Returns all four types. |
-| **TC-10** | `ParkingSystem.getAvailableParkingSlots(...)` | Verify available slots decrease after booking. | **PASS** | Booked slot removed from available. |
-| **TC-11** | `ParkingSystem.getAvailableParkingSlots(...)` | Verify inactive slots not included. | **PASS** | Inactive slot excluded from available. |
-| **TC-12** | `ParkingSystem.book(...)` | Verify creating a valid booking. | **PASS** | Booking created with correct details. |
-| **TC-13** | `ParkingSystem.book(...)` | Verify booking with end before start fails. | **PASS** | Correctly throws IllegalBookingTimeException. |
-| **TC-14** | `ParkingSystem.book(...)` | Verify booking with equal times fails. | **PASS** | Correctly throws IllegalBookingTimeException. |
-| **TC-15** | `ParkingSystem.book(...)` | Verify booking incompatible vehicle fails. | **PASS** | Correctly throws IllegalArgumentException. |
-| **TC-16** | `ParkingSystem.book(...)` | Verify booking with insufficient funds fails. | **PASS** | Correctly throws InsufficientFundsException. |
-| **TC-17** | `ParkingSystem.book(...)` | Verify booking with overlapping time fails. | **PASS** | Correctly throws IllegalArgumentException. |
-| **TC-18** | `ParkingSystem.book(...)` | Verify booking price calculation. | **PASS** | Price = 2 * 10 * 1.0 * 1.0 = 20.0. |
-| **TC-19** | `ParkingSystem.book(...)` | Verify pricing with different vehicle types. | **PASS** | BICYCLE + HANDICAPPED = 4.8. |
-| **TC-20** | `ParkingSystem.book(...)` | Verify funds transferred to system. | **PASS** | System wallet receives full amount. |
-| **TC-21** | `ParkingSystem.book(...)` | Verify multiple bookings work correctly. | **PASS** | Multiple bookings stored with correct IDs. |
-| **TC-22** | `ParkingSystem.completeBooking(...)` | Verify completing a booking. | **PASS** | Status changed to COMPLETED, funds distributed 80/20. |
-| **TC-23** | `ParkingSystem.completeBooking(...)` | Verify 80/20 distribution on completion. | **PASS** | 80% to slot, 20% retained by system. |
-| **TC-24** | `ParkingSystem.completeBooking(...)` | Verify funds transferred to slot wallet. | **PASS** | Slot wallet receives funds. |
-| **TC-25** | `ParkingSystem.cancelBooking(...)` | Verify cancelling a booking. | **PASS** | Status changed to CANCELLED, refund applied. |
-| **TC-26** | `ParkingSystem.cancelBooking(...)` | Verify 90/10 distribution on cancellation. | **PASS** | 90% refunded to vehicle, 10% retained by system. |
-| **TC-27** | `ParkingSystem.cancelBooking(...)` | Verify vehicle receives 90% refund. | **PASS** | Net loss is 10% of booking amount. |
-| **TC-28** | `ParkingSystem.getSYSTEM_WALLET()` | Verify system wallet receives funds. | **PASS** | System wallet balance increases. |
-| **TC-29** | `ParkingSystem` | Verify system wallet after completion. | **PASS** | System retains 20% (4.0 from 20.0 booking). |
-| **TC-30** | `ParkingSystem` | Verify system wallet after cancellation. | **PASS** | System retains 10% (2.0 from 20.0 booking). |
-| **TC-31** | `ParkingSystem.book(...)` | Verify BICYCLE on COMPACT pricing. | **PASS** | 2 * 10 * 0.2 * 0.8 = 3.2. |
-| **TC-32** | `ParkingSystem.book(...)` | Verify MOTORCYCLE on REGULAR pricing. | **PASS** | 2 * 10 * 0.5 * 1.0 = 10.0. |
-| **TC-33** | `ParkingSystem.book(...)` | Verify CAR on LARGE pricing. | **PASS** | 2 * 10 * 1.0 * 1.5 = 30.0. |
-| **TC-34** | `ParkingSystem.book(...)` | Verify BUS on LARGE pricing. | **PASS** | 2 * 10 * 2.0 * 1.5 = 60.0. |
-| **TC-35** | `ParkingSystem.book(...)` | Verify fractional hours truncated. | **PASS** | 1.5 hours truncated to 1 hour, charged 10.0. |
-| **TC-36** | `ParkingSystem.getBookings()` | Verify booking stored in system. | **PASS** | Booking appears in system's booking list. |
-| **TC-37** | `ParkingSlot.getBookings()` | Verify booking stored in slot. | **PASS** | Booking appears in slot's booking list. |
-| **TC-38** | `ParkingSystem` | Verify multiple bookings stored independently. | **PASS** | Both bookings in system and slot. |
-| **TC-39** | `ParkingSystem.getPARKING_RATE_PER_HOUR()` | Verify parking rate configuration. | **PASS** | Rate retrievable and settable. |
+| **1** | `Wallet.Wallet()` | Verify default constructor initializes balance to 0. | **PASS** | Default wallet correctly has 0 balance. |
+| **2** | `Wallet.Wallet(double)` | Verify constructor with positive initial balance sets correctly. | **PASS** | Constructor correctly sets provided balance. |
+| **3** | `Wallet.Wallet(double)` | Verify constructor accepts negative balance without validation. | **PASS** | Constructor allows negative balance (no validation). |
+| **4** | `Wallet.getBalance()` | Verify getBalance returns correct initial balance. | **PASS** | Returns correct initial balance value. |
+| **5** | `Wallet.addFunds(double)` | Verify adding positive amount increases balance. | **PASS** | Balance correctly increased by added amount. |
+| **6** | `Wallet.addFunds(double)` | Verify multiple addFunds operations accumulate correctly. | **PASS** | Multiple additions correctly accumulate. |
+| **7** | `Wallet.addFunds(double)` | Verify adding very small positive amount works. | **PASS** | Handles small decimal amounts precisely. |
+| **8** | `Wallet.addFunds(double)` | Verify adding zero throws InvalidAmountException. | **PASS** | Correctly throws InvalidAmountException. |
+| **9** | `Wallet.addFunds(double)` | Verify adding negative amount throws InvalidAmountException. | **PASS** | Correctly throws InvalidAmountException. |
+| **10** | `Wallet.deductFunds(double)` | Verify deducting valid amount decreases balance. | **PASS** | Balance correctly decreased by deducted amount. |
+| **11** | `Wallet.deductFunds(double)` | Verify deducting exact balance leaves 0. | **PASS** | Balance correctly becomes 0. |
+| **12** | `Wallet.deductFunds(double)` | Verify multiple deduct operations work correctly. | **PASS** | Multiple deductions correctly applied. |
+| **13** | `Wallet.deductFunds(double)` | Verify deducting more than balance throws InsufficientFundsException. | **PASS** | Correctly throws InsufficientFundsException. |
+| **14** | `Wallet.deductFunds(double)` | Verify deducting zero throws InvalidAmountException. | **PASS** | Correctly throws InvalidAmountException. |
+| **15** | `Wallet.deductFunds(double)` | Verify deducting negative amount throws InvalidAmountException. | **PASS** | Correctly throws InvalidAmountException. |
+| **16** | `Wallet.deductFunds(double)` | Verify deducting from empty wallet throws InsufficientFundsException. | **PASS** | Correctly throws InsufficientFundsException. |
+| **17** | `Wallet.deductFunds(double)` | Verify deducting small decimal amount works. | **PASS** | Handles small decimal deductions. |
+| **18** | `Wallet.transferFunds(Wallet, double)` | Verify transferring valid amount between wallets. | **PASS** | Both wallets correctly updated. |
+| **19** | `Wallet.transferFunds(Wallet, double)` | Verify transferring entire balance works. | **PASS** | Source empties, target receives full amount. |
+| **20** | `Wallet.transferFunds(Wallet, double)` | Verify transferring more than balance throws exception. | **PASS** | Correctly throws InsufficientFundsException. |
+| **21** | `Wallet.transferFunds(Wallet, double)` | Verify transferring zero throws InvalidAmountException. | **PASS** | Correctly throws InvalidAmountException. |
+| **22** | `Wallet.transferFunds(Wallet, double)` | Verify transferring negative amount throws InvalidAmountException. | **PASS** | Correctly throws InvalidAmountException. |
+| **23** | `Wallet.transferFunds(Wallet, double)` | Verify transferring from empty wallet throws exception. | **PASS** | Correctly throws InsufficientFundsException. |
+| **24** | `Wallet.transferFunds(Wallet, double)` | Verify multiple consecutive transfers work correctly. | **PASS** | All transfers applied correctly. |
+| **25** | `Wallet.transferFunds(Wallet, double)` | Verify transferring to same wallet (edge case). | **PASS** | Balance maintained after self-transfer. |
+| **26** | `Wallet.transferFunds(Wallet, double)` | Verify transferring small decimal amount works. | **PASS** | Precision maintained for small amounts. |
+| **27** | `Vehicle.Vehicle(int, VehicleType, Wallet)` | Verify Vehicle constructor with Wallet parameter. | **PASS** | Vehicle correctly initialized with provided wallet. |
+| **28** | `Vehicle.Vehicle(int, VehicleType, double)` | Verify Vehicle constructor with initial balance parameter. | **PASS** | New wallet created with correct balance. |
+| **29** | `Vehicle.Vehicle(int, VehicleType, double)` | Verify Vehicle can be created with zero balance. | **PASS** | Vehicle correctly created with 0 balance. |
+| **30** | `Vehicle.Vehicle(...)` | Verify Vehicle can be created with all VehicleTypes. | **PASS** | All vehicle types correctly supported. |
+| **31** | `Vehicle.getVehicleId()` | Verify getVehicleId returns correct ID. | **PASS** | Returns correct vehicle ID. |
+| **32** | `Vehicle.getVehicleType()` | Verify getVehicleType returns correct type. | **PASS** | Returns correct vehicle type. |
+| **33** | `Vehicle.getWallet()` | Verify getWallet returns the wallet object. | **PASS** | Returns same wallet object reference. |
+| **34** | `Vehicle.getBalance()` | Verify getBalance returns correct wallet balance. | **PASS** | Returns wallet balance correctly. |
+| **35** | `Vehicle.getBalance()` | Verify getBalance reflects wallet changes. | **PASS** | Reflects changes to underlying wallet. |
+| **36** | `Vehicle.getWallet().addFunds()` | Verify vehicle wallet can receive funds. | **PASS** | Funds correctly added to vehicle wallet. |
+| **37** | `Vehicle.getWallet().deductFunds()` | Verify vehicle wallet can lose funds. | **PASS** | Funds correctly deducted from vehicle wallet. |
+| **38** | `Vehicle.getWallet().deductFunds()` | Verify deducting more than balance fails. | **PASS** | Correctly throws InsufficientFundsException. |
+| **39** | `Vehicle.getWallet().transferFunds()` | Verify vehicle can transfer funds to another wallet. | **PASS** | Transfer correctly executed. |
+| **40** | `Vehicle` | Verify two vehicles with same ID but different wallets are different. | **PASS** | Different object instances despite same ID. |
+| **41** | `Vehicle` | Verify multiple vehicles have independent wallets. | **PASS** | Changes to one don't affect others. |
+| **42** | `Vehicle.toString()` | Verify toString includes vehicle information. | **PASS** | Contains ID, type, and balance. |
+| **43** | `Vehicle` | Verify vehicle can be created with negative balance. | **PASS** | Constructor allows negative balance. |
+| **44** | `Vehicle` | Verify vehicle handles large balance amounts. | **PASS** | Correctly handles large numbers. |
+| **45** | `Vehicle` | Verify vehicle handles various ID ranges. | **PASS** | Accepts positive, negative, and large IDs. |
+| **46** | `Vehicle` | Verify multiple vehicles can reference same wallet. | **PASS** | Shared wallet affects all vehicles. |
+| **47** | `ParkingSlot.ParkingSlot(String, ParkingSlotType)` | Verify ParkingSlot constructor initializes correctly. | **PASS** | All fields initialized with correct values. |
+| **48** | `ParkingSlot.getSlotId()` | Verify getSlotId returns correct ID. | **PASS** | Returns correct slot ID. |
+| **49** | `ParkingSlot.getSlotType()` | Verify getSlotType returns correct type. | **PASS** | Returns correct slot type. |
+| **50** | `ParkingSlot.getWallet()` | Verify getWallet returns wallet object. | **PASS** | Returns non-null wallet. |
+| **51** | `ParkingSlot.getBookings()` | Verify getBookings returns empty list initially. | **PASS** | Empty list initially. |
+| **52** | `ParkingSlot.getBalance()` | Verify getBalance returns wallet balance. | **PASS** | Returns 0 initially. |
+| **53** | `ParkingSlot.isActive()` | Verify isActive returns true by default. | **PASS** | Slot active by default. |
+| **54** | `ParkingSlot.activate()` | Verify activating a deactivated slot. | **PASS** | Slot becomes active. |
+| **55** | `ParkingSlot.deactivate()` | Verify deactivating a slot. | **PASS** | Slot becomes inactive. |
+| **56** | `ParkingSlot.activate/deactivate()` | Verify multiple activation/deactivation cycles. | **PASS** | Status correctly toggled multiple times. |
+| **57** | `ParkingSlot.isCompatible(MOTORCYCLE, ...)` | Verify MOTORCYCLE compatible with COMPACT. | **PASS** | Correctly compatible. |
+| **58** | `ParkingSlot.isCompatible(MOTORCYCLE, ...)` | Verify MOTORCYCLE compatible with REGULAR. | **PASS** | Correctly compatible. |
+| **59** | `ParkingSlot.isCompatible(MOTORCYCLE, ...)` | Verify MOTORCYCLE compatible with LARGE. | **PASS** | Correctly compatible. |
+| **60** | `ParkingSlot.isCompatible(CAR, ...)` | Verify CAR compatible with REGULAR. | **PASS** | Correctly compatible. |
+| **61** | `ParkingSlot.isCompatible(CAR, ...)` | Verify CAR compatible with LARGE. | **PASS** | Correctly compatible. |
+| **62** | `ParkingSlot.isCompatible(CAR, ...)` | Verify CAR NOT compatible with COMPACT. | **PASS** | Correctly rejects COMPACT. |
+| **63** | `ParkingSlot.isCompatible(BUS, ...)` | Verify BUS compatible with LARGE. | **PASS** | Correctly compatible. |
+| **64** | `ParkingSlot.isCompatible(BUS, ...)` | Verify BUS NOT compatible with COMPACT. | **PASS** | Correctly rejects COMPACT. |
+| **65** | `ParkingSlot.isCompatible(BICYCLE, ...)` | Verify BICYCLE compatible with all slot types. | **PASS** | Compatible with all four types. |
+| **66** | `ParkingSlot.isCompatible(MICROCAR, ...)` | Verify MICROCAR compatible with COMPACT. | **PASS** | Correctly compatible. |
+| **67** | `ParkingSlot.isCompatible(MICROCAR, ...)` | Verify MICROCAR compatible with REGULAR. | **PASS** | Correctly compatible. |
+| **68** | `ParkingSlot.isCompatible(MICROCAR, ...)` | Verify MICROCAR NOT compatible with LARGE. | **FAIL** | **DEFECT FOUND**: Falls through to default, returns false. Should allow MICROCAR on LARGE based on missing break statement. |
+| **69** | `ParkingSlot.isCompatible(TRUCK, ...)` | Verify TRUCK not compatible with any slot. | **PASS** | TRUCK correctly has no compatible slots (as per doc). |
+| **70** | `ParkingSlot.isCompatible(...)` | Verify inactive slot not compatible. | **PASS** | Inactive slot correctly returns false. |
+| **71** | `ParkingSlot.isAvailable(...)` | Verify empty slot is available. | **PASS** | Empty slot correctly available. |
+| **72** | `ParkingSlot.isAvailable(...)` | Verify overlapping booking makes slot unavailable. | **PASS** | Overlapping booking correctly blocks. |
+| **73** | `ParkingSlot.isAvailable(...)` | Verify booking ending at request start allows slot. | **PASS** | No overlap when end equals start. |
+| **74** | `ParkingSlot.isAvailable(...)` | Verify booking starting at request end allows slot. | **PASS** | No overlap when start equals end. |
+| **75** | `ParkingSlot.isAvailable(...)` | Verify multiple non-overlapping bookings. | **PASS** | Gap between bookings correctly available. |
+| **76** | `ParkingSlot.isAvailable(...)` | Verify partial overlap at start blocks. | **PASS** | Correctly identifies overlap. |
+| **77** | `ParkingSlot.isAvailable(...)` | Verify partial overlap at end blocks. | **PASS** | Correctly identifies overlap. |
+| **78** | `ParkingSlot.getWallet().addFunds()` | Verify slot wallet can receive funds. | **PASS** | Funds correctly added. |
+| **79** | `ParkingSlot.getWallet()` | Verify slot wallet handles transfers. | **PASS** | Transfers correctly applied. |
+| **80** | `ParkingSlot` | Verify slots created with all types. | **PASS** | All slot types supported. |
+| **81** | `ParkingSlot` | Verify slot ID with special characters. | **PASS** | Special characters accepted in ID. |
+| **82** | `Booking.Booking(...)` | Verify Booking constructor initializes correctly. | **PASS** | All fields initialized correctly with ACTIVE status. |
+| **83** | `Booking.Booking(...)` | Verify Booking with different vehicle types. | **PASS** | Different vehicle types supported. |
+| **84** | `Booking.getBookingId()` | Verify getBookingId returns correct ID. | **PASS** | Returns correct ID. |
+| **85** | `Booking.getVehicle()` | Verify getVehicle returns correct vehicle. | **PASS** | Returns correct vehicle. |
+| **86** | `Booking.getParkingSlot()` | Verify getParkingSlot returns correct slot. | **PASS** | Returns correct slot. |
+| **87** | `Booking.getStartTime()` | Verify getStartTime returns correct time. | **PASS** | Returns correct start time. |
+| **88** | `Booking.getEndTime()` | Verify getEndTime returns correct time. | **PASS** | Returns correct end time. |
+| **89** | `Booking.getAmount()` | Verify getAmount returns correct amount. | **PASS** | Returns correct amount. |
+| **90** | `Booking.getBookingStatus()` | Verify getBookingStatus returns ACTIVE. | **PASS** | New booking has ACTIVE status. |
+| **91** | `Booking.completeBooking()` | Verify completeBooking changes status to COMPLETED. | **PASS** | Status correctly changed. |
+| **92** | `Booking.cancelBooking()` | Verify cancelBooking changes status to CANCELLED. | **PASS** | Status correctly changed. |
+| **93** | `Booking.completeBooking()` | Verify calling complete multiple times. | **PASS** | Remains COMPLETED. |
+| **94** | `Booking.cancelBooking()` | Verify calling cancel multiple times. | **PASS** | Remains CANCELLED. |
+| **95** | `Booking.completeBooking/cancelBooking` | Verify completing after cancelling. | **PASS** | Status can be overwritten to COMPLETED. |
+| **96** | `Booking.cancelBooking/completeBooking` | Verify cancelling after completing. | **PASS** | Status can be overwritten to CANCELLED. |
+| **97** | `Booking` | Verify booking spanning consecutive hours. | **PASS** | Multiple hours correctly stored. |
+| **98** | `Booking` | Verify booking with different minute values. | **PASS** | Minutes preserved in times. |
+| **99** | `Booking` | Verify booking with seconds and nanoseconds. | **PASS** | Seconds and nanos preserved. |
+| **100** | `Booking` | Verify booking spanning multiple days. | **PASS** | Multi-day bookings supported. |
+| **101** | `Booking` | Verify booking with zero amount. | **PASS** | Accepts zero amount. |
+| **102** | `Booking` | Verify booking with negative amount. | **PASS** | Constructor allows negative amount. |
+| **103** | `Booking` | Verify booking with large amount. | **PASS** | Large amounts handled. |
+| **104** | `Booking` | Verify booking with decimal amount. | **PASS** | Decimal precision maintained. |
+| **105** | `Booking.toString()` | Verify toString includes booking info. | **PASS** | Contains ID and status. |
+| **106** | `Booking` | Verify booking with minimum duration. | **PASS** | Very close times supported. |
+| **107** | `Booking` | Verify booking uses correct vehicle reference. | **PASS** | Correct vehicle stored. |
+| **108** | `Booking` | Verify booking uses correct slot reference. | **PASS** | Correct slot stored. |
+| **109** | `Booking` | Verify bookings with various IDs. | **PASS** | Various ID ranges supported. |
+| **110** | `ParkingSystem.getInstance()` | Verify ParkingSystem is a singleton. | **PASS** | Returns same instance. |
+| **111** | `ParkingSystem.addVehicle(Vehicle)` | Verify adding vehicle to system. | **PASS** | Vehicle added to list. |
+| **112** | `ParkingSystem.addVehicle(...)` | Verify adding multiple vehicles. | **PASS** | Multiple vehicles added correctly. |
+| **113** | `ParkingSystem.addParkingSlot(...)` | Verify adding parking slot to system. | **PASS** | Slot added to list. |
+| **114** | `ParkingSystem.addParkingSlot(...)` | Verify adding multiple parking slots. | **PASS** | Multiple slots added correctly. |
+| **115** | `ParkingSystem.getAvailableParkingSlots(CAR, ...)` | Verify getting available slots for CAR. | **PASS** | Returns REGULAR and LARGE only. |
+| **116** | `ParkingSystem.getAvailableParkingSlots(MOTORCYCLE, ...)` | Verify getting available slots for MOTORCYCLE. | **PASS** | Returns all three types. |
+| **117** | `ParkingSystem.getAvailableParkingSlots(BUS, ...)` | Verify getting available slots for BUS. | **PASS** | Returns only LARGE. |
+| **118** | `ParkingSystem.getAvailableParkingSlots(BICYCLE, ...)` | Verify getting available slots for BICYCLE. | **PASS** | Returns all four types. |
+| **119** | `ParkingSystem.getAvailableParkingSlots(...)` | Verify available slots decrease after booking. | **PASS** | Booked slot removed from available. |
+| **120** | `ParkingSystem.getAvailableParkingSlots(...)` | Verify inactive slots not included. | **PASS** | Inactive slot excluded from available. |
+| **121** | `ParkingSystem.book(...)` | Verify creating a valid booking. | **PASS** | Booking created with correct details. |
+| **122** | `ParkingSystem.book(...)` | Verify booking with end before start fails. | **PASS** | Correctly throws IllegalBookingTimeException. |
+| **123** | `ParkingSystem.book(...)` | Verify booking with equal times fails. | **PASS** | Correctly throws IllegalBookingTimeException. |
+| **124** | `ParkingSystem.book(...)` | Verify booking incompatible vehicle fails. | **PASS** | Correctly throws IllegalArgumentException. |
+| **125** | `ParkingSystem.book(...)` | Verify booking with insufficient funds fails. | **PASS** | Correctly throws InsufficientFundsException. |
+| **126** | `ParkingSystem.book(...)` | Verify booking with overlapping time fails. | **PASS** | Correctly throws IllegalArgumentException. |
+| **127** | `ParkingSystem.book(...)` | Verify booking price calculation. | **PASS** | Price = 2 * 10 * 1.0 * 1.0 = 20.0. |
+| **128** | `ParkingSystem.book(...)` | Verify pricing with different vehicle types. | **PASS** | BICYCLE + HANDICAPPED = 4.8. |
+| **129** | `ParkingSystem.book(...)` | Verify funds transferred to system. | **PASS** | System wallet receives full amount. |
+| **130** | `ParkingSystem.book(...)` | Verify multiple bookings work correctly. | **PASS** | Multiple bookings stored with correct IDs. |
+| **131** | `ParkingSystem.completeBooking(...)` | Verify completing a booking. | **PASS** | Status changed to COMPLETED, funds distributed 80/20. |
+| **132** | `ParkingSystem.completeBooking(...)` | Verify 80/20 distribution on completion. | **PASS** | 80% to slot, 20% retained by system. |
+| **133** | `ParkingSystem.completeBooking(...)` | Verify funds transferred to slot wallet. | **PASS** | Slot wallet receives funds. |
+| **134** | `ParkingSystem.cancelBooking(...)` | Verify cancelling a booking. | **PASS** | Status changed to CANCELLED, refund applied. |
+| **135** | `ParkingSystem.cancelBooking(...)` | Verify 90/10 distribution on cancellation. | **PASS** | 90% refunded to vehicle, 10% retained by system. |
+| **136** | `ParkingSystem.cancelBooking(...)` | Verify vehicle receives 90% refund. | **PASS** | Net loss is 10% of booking amount. |
+| **137** | `ParkingSystem.getSYSTEM_WALLET()` | Verify system wallet receives funds. | **PASS** | System wallet balance increases. |
+| **138** | `ParkingSystem` | Verify system wallet after completion. | **PASS** | System retains 20% (4.0 from 20.0 booking). |
+| **139** | `ParkingSystem` | Verify system wallet after cancellation. | **PASS** | System retains 10% (2.0 from 20.0 booking). |
+| **140** | `ParkingSystem.book(...)` | Verify BICYCLE on COMPACT pricing. | **PASS** | 2 * 10 * 0.2 * 0.8 = 3.2. |
+| **141** | `ParkingSystem.book(...)` | Verify MOTORCYCLE on REGULAR pricing. | **PASS** | 2 * 10 * 0.5 * 1.0 = 10.0. |
+| **142** | `ParkingSystem.book(...)` | Verify CAR on LARGE pricing. | **PASS** | 2 * 10 * 1.0 * 1.5 = 30.0. |
+| **143** | `ParkingSystem.book(...)` | Verify BUS on LARGE pricing. | **PASS** | 2 * 10 * 2.0 * 1.5 = 60.0. |
+| **144** | `ParkingSystem.book(...)` | Verify fractional hours truncated. | **PASS** | 1.5 hours truncated to 1 hour, charged 10.0. |
+| **145** | `ParkingSystem.getBookings()` | Verify booking stored in system. | **PASS** | Booking appears in system's booking list. |
+| **146** | `ParkingSlot.getBookings()` | Verify booking stored in slot. | **PASS** | Booking appears in slot's booking list. |
+| **147** | `ParkingSystem` | Verify multiple bookings stored independently. | **PASS** | Both bookings in system and slot. |
+| **148** | `ParkingSystem.getPARKING_RATE_PER_HOUR()` | Verify parking rate configuration. | **PASS** | Rate retrievable and settable. |
 
 ---
 
