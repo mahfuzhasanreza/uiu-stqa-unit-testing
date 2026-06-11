@@ -9,9 +9,9 @@
 ## Summary
 
 * **Total Tests:** 148
-* **Passed:** 138
-* **Failed:** 10
-* **Pass Rate:** 93.24%
+* **Passed:** 139
+* **Failed:** 9
+* **Pass Rate:** 93.92%
 * **Key Issue:** Pricing calculation bug affecting multiple tests (Tests 127, 128, 140, 142, 143) with cascading effects on financial distribution tests (131, 134, 135, 137, 129)
 
 ---
@@ -87,7 +87,7 @@
 | **65** | `ParkingSlot.isCompatible(BICYCLE, ...)` | Verify BICYCLE compatible with all slot types. | **PASS** | Compatible with all four types. |
 | **66** | `ParkingSlot.isCompatible(MICROCAR, ...)` | Verify MICROCAR compatible with COMPACT. | **PASS** | Correctly compatible. |
 | **67** | `ParkingSlot.isCompatible(MICROCAR, ...)` | Verify MICROCAR compatible with REGULAR. | **PASS** | Correctly compatible. |
-| **68** | `ParkingSlot.isCompatible(MICROCAR, ...)` | Verify MICROCAR NOT compatible with LARGE. | **FAIL** | **DEFECT FOUND**: Falls through to default, returns false. Should allow MICROCAR on LARGE based on missing break statement. |
+| **68** | `ParkingSlot.isCompatible(MICROCAR, ...)` | Verify MICROCAR NOT compatible with LARGE. | **PASS** | Correctly rejects LARGE slot for MICROCAR. |
 | **69** | `ParkingSlot.isCompatible(TRUCK, ...)` | Verify TRUCK not compatible with any slot. | **PASS** | TRUCK correctly has no compatible slots (as per doc). |
 | **70** | `ParkingSlot.isCompatible(...)` | Verify inactive slot not compatible. | **PASS** | Inactive slot correctly returns false. |
 | **71** | `ParkingSlot.isAvailable(...)` | Verify empty slot is available. | **PASS** | Empty slot correctly available. |
@@ -175,19 +175,6 @@
 
 ### **Defect ID: 01**
 
-* **Class.Method:** `ParkingSlot.isCompatible(VehicleType, LocalDateTime, LocalDateTime)`
-* **Description:** The MICROCAR case in the compatibility switch statement is missing a `break` statement. This causes the code to fall through to the `default` case which returns `false`. As a result, MICROCAR cannot book any parking slots, even though the documentation specifies it should be compatible with COMPACT and REGULAR slots. This is a critical logic error that violates the documented business rules.
-* **Suggested Fix:** Add `break;` statement after the MICROCAR compatibility check (after line 37):
-```java
-case MICROCAR:
-    if (slotType == ParkingSlotType.COMPACT || slotType == ParkingSlotType.REGULAR) {
-        return isAvailable(startTime, endTime);
-    }
-    break;  // Add this line
-```
-
-### **Defect ID: 02**
-
 * **Class.Method:** `Booking.Booking(int, Vehicle, ParkingSlot, LocalDateTime, LocalDateTime, double)`
 * **Description:** The Booking constructor does not validate that `endTime` is after `startTime`. While `ParkingSystem.book()` performs this validation before creating a Booking, the Booking class can still be instantiated directly with invalid times. This creates an inconsistency: direct instantiation can create Bookings with `endTime <= startTime`, but bookings through the system cannot. This violates defensive programming principles and the business rule that "end must be strictly after start."
 * **Suggested Fix:** Add validation in Booking constructor:
@@ -201,7 +188,7 @@ public Booking(int bookingId, Vehicle vehicle, ParkingSlot parkingSlot,
 }
 ```
 
-### **Defect ID: 03**
+### **Defect ID: 02**
 
 * **Class.Method:** `ParkingSystem.getInstance()`
 * **Description:** The ParkingSystem uses a static singleton instance that persists across test execution and application lifetime. While this is intentional for the singleton pattern, it creates a significant testing challenge: the system state is not automatically reset between test cases, leading to test interdependency and potential failures if tests run in a specific order. Tests must explicitly clean up the static state, which is not guaranteed to happen if a test fails.
@@ -219,7 +206,7 @@ public void clearAllData() {
 }
 ```
 
-### **Defect ID: 04**
+### **Defect ID: 03**
 
 * **Class.Method:** `ParkingSlot.isCompatible(VehicleType, LocalDateTime, LocalDateTime)`
 * **Description:** The TRUCK vehicle type has no case in the compatibility switch statement, causing it to fall through to the `default` case which returns `false`. This means TRUCK is incompatible with all slot types. While this aligns with the documentation (which lists no compatible slots for TRUCK), the design is intentional but not explicitly clear in comments. This could confuse future maintainers who might expect TRUCK to be handled like other vehicle types.
@@ -230,7 +217,7 @@ case TRUCK:
     return false;
 ```
 
-### **Defect ID: 05**
+### **Defect ID: 04**
 
 * **Class.Method:** `ParkingSystem.book(VehicleType, ParkingSlot, LocalDateTime, LocalDateTime)` 
 * **Description:** **CRITICAL - Pricing calculation is incorrect.** The pricing formula is computing an unexpected multiplier, resulting in prices that are 1.5x higher than expected for LARGE slot bookings (and higher for other combinations). Tests show: CAR+LARGE expects 30.0 but gets 45.0, BUS+LARGE expects 60.0 but gets 90.0, BICYCLE+COMPACT expects 3.2 but gets 4.8. The pattern suggests either (a) the LARGE slot multiplier (1.5) is being applied twice, or (b) there's an additional undocumented multiplier in the calculation. This causes cascading failures in financial distribution tests (80/20 and 90/10 refund calculations).
