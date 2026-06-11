@@ -175,54 +175,74 @@
 
 ### **Defect ID: 01**
 
-* **Class.Method:** `Booking.Booking(int, Vehicle, ParkingSlot, LocalDateTime, LocalDateTime, double)`
-* **Description:** The Booking constructor does not validate that `endTime` is after `startTime`. While `ParkingSystem.book()` performs this validation before creating a Booking, the Booking class can still be instantiated directly with invalid times. This creates an inconsistency: direct instantiation can create Bookings with `endTime <= startTime`, but bookings through the system cannot. This violates defensive programming principles and the business rule that "end must be strictly after start."
-* **Suggested Fix:** Add validation in Booking constructor:
-```java
-public Booking(int bookingId, Vehicle vehicle, ParkingSlot parkingSlot, 
-               LocalDateTime startTime, LocalDateTime endTime, double amount) {
-    if (endTime.isBefore(startTime) || endTime.isEqual(startTime)) {
-        throw new IllegalBookingTimeException();
-    }
-    // ... rest of constructor logic
-}
-```
+* **Class.Method:** `ParkingSystem.book(Vehicle, ParkingSlot, LocalDateTime, LocalDateTime)`
+* **Test ID:** 127
+* **Description:** Basic pricing calculation error. Expected booking price of 20.0 (2 hours × 10 base rate × 1.0 vehicle rate × 1.0 slot multiplier), but got 30.0. Indicates the pricing formula is computing an incorrect multiplier or duration.
+* **Suggested Fix:** Review the pricing calculation in `book()` method to ensure the formula `price = hours * PARKING_RATE_PER_HOUR * vehicleTypeRate * slotTypeMultiplier` is implemented correctly.
 
 ### **Defect ID: 02**
 
-* **Class.Method:** `ParkingSystem.getInstance()`
-* **Description:** The ParkingSystem uses a static singleton instance that persists across test execution and application lifetime. While this is intentional for the singleton pattern, it creates a significant testing challenge: the system state is not automatically reset between test cases, leading to test interdependency and potential failures if tests run in a specific order. Tests must explicitly clean up the static state, which is not guaranteed to happen if a test fails.
-* **Suggested Fix:** Implement a reset/clear mechanism for testing:
-```java
-public static void resetInstance() {
-    instance = null;  // Allow getInstance to create a fresh instance
-}
-// Or provide a method to clear state:
-public void clearAllData() {
-    vehicles.clear();
-    parkingSlots.clear();
-    bookings.clear();
-    SYSTEM_WALLET = new Wallet();
-}
-```
+* **Class.Method:** `ParkingSystem.book(Vehicle, ParkingSlot, LocalDateTime, LocalDateTime)`
+* **Test ID:** 128
+* **Description:** Mixed vehicle and slot type pricing error. For BICYCLE (rate 0.2) on HANDICAPPED slot (multiplier 1.2), expected 4.8 (2 × 10 × 0.2 × 1.2), but got 7.2. Indicates incorrect multiplier combination handling.
+* **Suggested Fix:** Verify that vehicle rate and slot type multiplier are both applied correctly without double-counting or additional factors.
 
 ### **Defect ID: 03**
 
-* **Class.Method:** `ParkingSlot.isCompatible(VehicleType, LocalDateTime, LocalDateTime)`
-* **Description:** The TRUCK vehicle type has no case in the compatibility switch statement, causing it to fall through to the `default` case which returns `false`. This means TRUCK is incompatible with all slot types. While this aligns with the documentation (which lists no compatible slots for TRUCK), the design is intentional but not explicitly clear in comments. This could confuse future maintainers who might expect TRUCK to be handled like other vehicle types.
-* **Suggested Fix (Optional):** If TRUCK should be supported in the future, add a case for it. If intentional, add a comment clarifying that TRUCK has no valid parking slots:
-```java
-case TRUCK:
-    // TRUCK is not supported for parking in this system
-    return false;
-```
+* **Class.Method:** `ParkingSystem.book(Vehicle, ParkingSlot, LocalDateTime, LocalDateTime)`
+* **Test ID:** 129
+* **Description:** Vehicle balance after booking is incorrect (cascading from Defect 01). CAR wallet balance expected 980.0 (1000 - 20), but got 970.0 (1000 - 30). Caused by incorrect pricing charge from Test 127 bug.
+* **Suggested Fix:** Fix Defect ID: 01 (pricing calculation). Once pricing is corrected, this test should pass automatically.
 
 ### **Defect ID: 04**
 
-* **Class.Method:** `ParkingSystem.book(VehicleType, ParkingSlot, LocalDateTime, LocalDateTime)` 
-* **Description:** **CRITICAL - Pricing calculation is incorrect.** The pricing formula is computing an unexpected multiplier, resulting in prices that are 1.5x higher than expected for LARGE slot bookings (and higher for other combinations). Tests show: CAR+LARGE expects 30.0 but gets 45.0, BUS+LARGE expects 60.0 but gets 90.0, BICYCLE+COMPACT expects 3.2 but gets 4.8. The pattern suggests either (a) the LARGE slot multiplier (1.5) is being applied twice, or (b) there's an additional undocumented multiplier in the calculation. This causes cascading failures in financial distribution tests (80/20 and 90/10 refund calculations).
-* **Affected Tests:** Tests 127, 128, 129, 140, 142, 143 (direct pricing failures); Tests 131, 134, 135, 137 (cascading financial distribution failures).
-* **Suggested Fix:** Review `ParkingSystem.book()` pricing calculation logic. Verify that the formula `price = hours * PARKING_RATE_PER_HOUR * vehicleTypeRate * slotTypeMultiplier` is implemented exactly once without any additional multiplications or nested calculations.
+* **Class.Method:** `ParkingSystem.completeBooking(Booking)`
+* **Test ID:** 131
+* **Description:** 80/20 distribution on booking completion is incorrect. Expected slot to receive 14.0 (80% of 17.5), but got 6.0. The 80/20 split calculation is not working correctly.
+* **Suggested Fix:** Review the `completeBooking()` method to verify the 80/20 distribution formula: `slotAmount = bookingAmount * 0.80`, `systemRetain = bookingAmount * 0.20`.
+
+### **Defect ID: 05**
+
+* **Class.Method:** `ParkingSystem.cancelBooking(Booking)`
+* **Test ID:** 134
+* **Description:** Vehicle cancellation refund is incorrect. Expected vehicle balance 988.0 (1000 - 12 net loss), but got 997.0 (1000 - 3 loss). The 90/10 refund calculation is not distributing funds correctly.
+* **Suggested Fix:** Review the `cancelBooking()` method to verify: `refundAmount = bookingAmount * 0.90` is transferred back to vehicle, and system retains `bookingAmount * 0.10`.
+
+### **Defect ID: 06**
+
+* **Class.Method:** `ParkingSystem.cancelBooking(Booking)`
+* **Test ID:** 135
+* **Description:** System retention on cancellation is incorrect. Expected system to retain only 2.0 (10% of 20.0), resulting in net vehicle loss of 2.0, but got 3.0 loss. System is retaining more than the documented 10%.
+* **Suggested Fix:** Verify that `cancelBooking()` retains exactly 10% of the booking amount and refunds 90%, not more.
+
+### **Defect ID: 07**
+
+* **Class.Method:** `ParkingSystem.getSYSTEM_WALLET().getBalance()`
+* **Test ID:** 137
+* **Description:** System wallet receives incorrect funds after booking. Expected 20.0, but got 30.0. System wallet is receiving the over-charged amount due to the pricing bug (Defect 01).
+* **Suggested Fix:** Fix Defect ID: 01 (pricing calculation). System wallet should receive the correctly calculated full booking price.
+
+### **Defect ID: 08**
+
+* **Class.Method:** `ParkingSystem.book(Vehicle, ParkingSlot, LocalDateTime, LocalDateTime)`
+* **Test ID:** 140
+* **Description:** BICYCLE on COMPACT slot pricing error. Expected 3.2 (2 hours × 10 × 0.2 BICYCLE rate × 0.8 COMPACT multiplier), but got 4.8. Indicates incorrect application of slot type multiplier (possibly 1.5 applied instead of 0.8).
+* **Suggested Fix:** Verify that COMPACT slot multiplier (0.8) is correctly retrieved and applied, not confused with LARGE multiplier (1.5).
+
+### **Defect ID: 09**
+
+* **Class.Method:** `ParkingSystem.book(Vehicle, ParkingSlot, LocalDateTime, LocalDateTime)`
+* **Test ID:** 142
+* **Description:** CAR on LARGE slot pricing error. Expected 30.0 (2 × 10 × 1.0 CAR rate × 1.5 LARGE multiplier), but got 45.0. Suggests LARGE multiplier (1.5) is being applied twice: 30.0 × 1.5 = 45.0.
+* **Suggested Fix:** Review pricing calculation logic to ensure slot type multiplier is applied once, not multiple times. Check for nested multiplication or redundant multiplier application.
+
+### **Defect ID: 10**
+
+* **Class.Method:** `ParkingSystem.book(Vehicle, ParkingSlot, LocalDateTime, LocalDateTime)`
+* **Test ID:** 143
+* **Description:** BUS on LARGE slot pricing error. Expected 60.0 (2 × 10 × 2.0 BUS rate × 1.5 LARGE multiplier), but got 90.0. Pattern confirms LARGE multiplier (1.5) is applied twice: 60.0 × 1.5 = 90.0, same as Defect 09.
+* **Suggested Fix:** Fix the root cause in pricing calculation where slot type multiplier is being applied twice or additional undocumented multiplier is present.
+
 
 ---
 
